@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html style="font-size: 16px;" lang="en"><head>
+<html style="font-size: 16px;" lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <meta name="keywords" content="">
@@ -10,17 +10,26 @@
     <link rel="stylesheet" href="{% static 'css/Dashboard.css' %}" media="screen">
     <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>
     <script class="u-script" type="text/javascript" src="{% static 'js/nicepage.js' %}" defer=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5"></script>
+    <script src="https://mpld3.github.io/js/mpld3.v0.5.1.js"></script>
     <meta name="generator" content="Nicepage 6.6.3, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|ABeeZee:400,400i">
-  
-    
-    
-    
-    
-    
-    
-    
+
+    {% load static %}
+    <script src="{% static 'mpld3.js' %}"></script>
+    <style>
+      rect.mpld3-axesbg {
+          fill: none !important; 
+      }
+      .plot-container {
+          margin: 1px; 
+          padding: 1px;
+          top: 10px; 
+          left: 20px;
+          width: 550px;
+      }
+    </style>
     
     
     <script type="application/ld+json">{
@@ -91,7 +100,10 @@
             <h4 class="u-custom-font u-text u-text-7">FORECASTED WATER LEVEL</h4>
           </div>
         </div>
-        <img class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/water_level_dashboard.png' %}" alt="" data-image-width="872" data-image-height="571">
+        <!-- <img class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/water_level_dashboard.png' %}" alt="" data-image-width="872" data-image-height="571"> -->
+        <div class="plot-container">
+          {{ plot|safe }}
+       </div>
         <div class="u-align-center u-container-style u-custom-color-6 u-group u-radius u-shape-round u-group-6">
           <div class="u-container-layout u-container-layout-6">
             <p class="u-text u-text-8">{{ Tomorrow |floatformat:2 }} m</p>
@@ -114,9 +126,7 @@
         <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-1"></div>
       </div>
     </section>
-    
-    
-    
+  
     
     
     

@@ -1,4 +1,4 @@
-#import tensorflow 
+import tensorflow 
 from keras.models import load_model
 from django.shortcuts import render
 #from django.http import HttpResponse
@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler
 #from keras.models import Sequential
 #from keras.layers import LSTM, Dense
 from keras.layers import Input
+import mpld3
+from mpld3 import plugins
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -17,6 +19,7 @@ from keras.models import load_model
 import datetime
 import matplotlib.dates as mdates
 import csv
+
 
 
 model_water = load_model('Model_water.h5')
@@ -114,29 +117,44 @@ def Dashboard(request):
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values = df_forecast.loc[forecast_dates, 'Water Level']
         # Plotting
-        plt.cla()
-        title = 'Forecasted Water Level'
-        plt.figure(figsize=(10, 7))
-        plt.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=8, label='Past Water Level', linewidth=3)
-        plt.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=8, linewidth=3)
+        fig, ax = plt.subplots(figsize=(5.5, 4.4))
 
-        # Connect past data to forecasted data
-        #plt.plot([last_known_date, forecast_dates[0]], [last_known_value, forecast_values.iloc[0]], color='green', linestyle='--')
-        plt.xlabel('DATE', fontsize=20, color="white", labelpad=30)  
-        plt.ylabel('WATER LEVEL', fontsize=20, color="white", labelpad=30) 
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        plt.yticks(color='white',fontsize=20)
-        plt.xticks(rotation=85, color='white', fontsize=20)
-        plt.grid(axis='x', linestyle='--', alpha=0.2)
-        plt.grid(axis='y', linestyle='--', alpha=0.2)
-        plt.legend(loc='lower right', fontsize='x-large', ncol=1, borderpad=0.5, borderaxespad=1.0, shadow=True)      
-        plt.gca().spines['top'].set_color('black')  
-        plt.gca().spines['right'].set_color('black')  
-        plt.gca().spines['bottom'].set_color('black')  
-        plt.gca().spines['left'].set_color('black')  
-        plt.tight_layout() 
-        plt.savefig('decision_support/static/img/water_level_dashboard.png', transparent=True)
-    water_level_dashboard()
+        # Plot past water level
+        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Past Water Level', linewidth=3)
+
+        
+        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
+    
+        ax.spines['top'].set_color('white')
+        ax.spines['right'].set_color('white')
+        ax.spines['bottom'].set_color('white')
+        ax.spines['left'].set_color('white')
+        
+        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
+        ax.set_ylabel('WATER LEVEL', fontsize=15, color="white", labelpad=7)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+        ax.yaxis.set_tick_params(labelcolor='black', labelsize=10)
+        ax.xaxis.set_tick_params(rotation=85, labelcolor='black', labelsize=10)
+        ax.grid(axis='both', linestyle='--', alpha=0.2)
+        ax.legend(loc='lower right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
+        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(original['Water Level'].values), voffset=20, hoffset=10)
+        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(forecast_values.values), voffset=20, hoffset=10)
+
+        plugins.connect(fig, tooltip1)
+        plugins.connect(fig, tooltip2)
+
+
+        plt.tight_layout()
+
+        # Convert plot to HTML using mpld3
+        html_str = mpld3.fig_to_html(fig)
+
+        plt.close()  # Close the plot to free up memory
+
+        return html_str
+
+        # plt.savefig('decision_support/static/img/water_level_dashboard.png', transparent=True)
+    plot = water_level_dashboard()
 
 
     def minimum_water_level(csv_file):
@@ -200,7 +218,8 @@ def Dashboard(request):
                    'Date': dateToday,
                    'date_today': date_today,
                    'date_yest': date_yest,
-                   'date_tom': date_tom})
+                   'date_tom': date_tom,
+                   'plot': plot})
 
 
 
