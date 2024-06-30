@@ -14,63 +14,127 @@
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|ABeeZee:400,400i">
    
+    {% load static %}
+    <script src="{% static 'mpld3.js' %}"></script>
+    <style>
+      rect.mpld3-axesbg {
+          fill: none !important; 
+      }
+      .plot-container {
+          margin: 1px; 
+          padding: 1px;
+          top: 10px; 
+          left: 20px;
+          width: 550px;
+      }
+      .alloc-container {
+          margin: 1px; 
+          padding: 1px;
+          top: 70px; 
+          left: 20px;
+
+      }
+    </style> 
     
     
     
     
     
-    
-    
-    
-    
-    
-    <script type="application/ld+json">{
-		"@context": "http://schema.org",
-		"@type": "Organization",
-		"name": "",
-		"logo": "images/4-removebg-preview.png"
-}</script>
-    <meta name="theme-color" content="#0cbcf5">
-    <meta property="og:title" content="Forecast">
-    <meta property="og:type" content="website">
-  <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
-  <body data-path-to-root="./" data-include-products="false" class="u-body u-xl-mode" data-lang="en"><header class="u-clearfix u-custom-color-1 u-header u-header" id="sec-8426"><img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-1" src="{% static 'img/logo_header.png' %}" alt="" data-image-width="1250" data-image-height="1250"><p class="u-align-center u-custom-font u-heading-font u-text u-text-1">{{ Date }} </p><nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
-        <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
-          <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{% url 'forecast' %}">
-            <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu-hamburger"></use></svg>
-            <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
-</g></svg>
-          </a>
-        </div>
-        <div class="u-custom-menu u-nav-container">
-          <ul class="u-custom-font u-font-lato u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'dashboard' %}" style="padding: 10px 0px;">Dashboard</a>
-</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'forecast' %}" style="padding: 10px 0px;">Forecast</a>
-</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'business_zone' %}" style="padding: 10px 0px;">Business zones</a>
-</li></ul>
-        </div>
-        <div class="u-custom-menu u-nav-container-collapse">
-          <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
-            <div class="u-inner-container-layout u-sidenav-overflow">
-              <div class="u-menu-close"></div>
-              <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'forecast' %}">Forecast</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'business_zone' %}">Business zones</a>
-</li></ul>
+  <script type="application/ld+json">{
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "logo": "images/4-removebg-preview.png"
+  }</script>
+      <meta name="theme-color" content="#0cbcf5">
+      <meta property="og:title" content="Forecast">
+      <meta property="og:type" content="website">
+    <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
+    <body data-path-to-root="./" data-include-products="false" class="u-body u-xl-mode" data-lang="en"><header class="u-clearfix u-custom-color-1 u-header u-header" id="sec-8426"><img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-1" src="{% static 'img/logo_header.png' %}" alt="" data-image-width="1250" data-image-height="1250"><p class="u-align-center u-custom-font u-heading-font u-text u-text-1">{{ Date }} </p><nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
+      <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
+            <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{% url 'forecast' %}">
+              <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu-hamburger"></use></svg>
+              <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+  </g></svg>
+            </a>
+          </div>
+          <div class="u-custom-menu u-nav-container">
+            <ul class="u-custom-font u-font-lato u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'dashboard' %}" style="padding: 10px 0px;">Dashboard</a>
+  </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'forecast' %}" style="padding: 10px 0px;">Forecast</a>
+  </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'business_zone' %}" style="padding: 10px 0px;">Business zones</a>
+  </li></ul>
+          </div>
+          <div class="u-custom-menu u-nav-container-collapse">
+            <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+              <div class="u-inner-container-layout u-sidenav-overflow">
+                <div class="u-menu-close"></div>
+                <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+  </li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'forecast' %}">Forecast</a>
+  </li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Business zones</a>
+  </li></ul>
             </div>
           </div>
           <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
         </div>
-      </nav></header>
+      </nav><div class="u-clearfix u-custom-html u-custom-html-1">
+        <style> .btn-primary-forecast {
+		background-color: #0cbcf5; 
+		color: black; 
+		padding: 10px 20px; 
+		border: none; 
+		border-radius: 5px;
+		font-size: 16px; 
+		font: Open sans;
+		font-weight: bold;
+		cursor: pointer; 
+	}
+
+	.btn-primary-forecast:hover {
+		background-color: #53d0f8;
+	}
+	.btn-primary-forecast:active {
+		background-color: #004aad;
+		color: White;
+	} </style>
+        <div>
+          <button class="btn btn-primary-forecast" id="forecast_all-btn">Forecast All</button>
+        </div>
+      </div></header>
     <section class="u-clearfix u-custom-color-1 u-section-1" id="sec-5a07">
       <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="custom-expanded u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-1">
+        <div class="u-border-2 u-border-custom-color-3 u-container-style u-expanded-width u-group u-palette-5-dark-3 u-radius u-shape-round u-group-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
           <div class="u-container-layout u-container-layout-1">
-            <p class="u-custom-font u-text u-text-default u-text-1">Spilling Level</p>
             <img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-1" src="{% static 'img/water-level.png' %}" alt="" data-image-width="512" data-image-height="512">
-            <h4 class="u-align-center u-custom-font u-font-lato u-text u-text-2">Forecasted Water Level</h4>
+            <h4 class="u-align-center u-custom-font u-font-lato u-text u-text-1">Forecasted Water Level</h4>
+            <p class="u-custom-font u-text u-text-default u-text-2">Spilling Level</p>
             <p class="u-text u-text-default u-text-3">80.15 meters</p>
-            <img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/water_level_plot.png' %}" alt="" data-image-width="2000" data-image-height="1000">
-            <a href="#sec-e004" class="u-btn u-btn-round u-button-style u-dialog-link u-hover-palette-1-light-1 u-palette-1-base u-radius u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
+           <!-- <img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/water_level_plot.png' %}" alt="" data-image-width="2000" data-image-height="1000"> -->
+            <div class="plot-container">
+              {{ water_plot|safe }}
+           </div>
+            <div class="u-clearfix u-custom-html u-custom-html-1">
+              <style> .btn-primary-forecast {
+		background-color: #0cbcf5; 
+		color: black; 
+		padding: 10px 20px; 
+		border: none; 
+		border-radius: 5px;
+		font-size: 16px; 
+		font: Open sans;
+		font-weight: bold;
+		cursor: pointer; 
+	}
+	.btn-primary-forecast:hover {
+		background-color: #53d0f8;
+	}
+	.btn-primary-forecast:active {
+		background-color: #004aad;
+		color: White;
+	} </style>
+              <div>
+                <button class="btn btn-primary-forecast" id="forecast_waterlvl-btn">Forecast</button>
+              </div>
+            </div>
+            <a href="#sec-e004" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-btn-rectangle u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1">Evaluation Metric </a>
             <img class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/water_level_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">
           </div>
         </div>
@@ -81,8 +145,34 @@
         <div class="u-border-2 u-border-custom-color-3 u-container-style u-expanded-width u-group u-palette-5-dark-3 u-radius u-shape-round u-group-1">
           <div class="u-container-layout u-container-layout-1">
             <h4 class="u-custom-font u-font-lato u-text u-text-default u-text-1">Forecasted Rainfall</h4>
-            <img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/rainfall_plot.png' %}" alt="" data-image-width="2000" data-image-height="1000">
-            <a href="#sec-d91f" class="u-btn u-btn-round u-button-style u-dialog-link u-hover-palette-1-light-1 u-palette-1-base u-radius u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
+            <!-- <img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/rainfall_plot.png' %}" alt="" data-image-width="2000" data-image-height="1000"> -->
+            <div class="plot-container">
+              {{ rain_plot|safe }}
+           </div>
+            <div class="u-clearfix u-custom-html u-custom-html-1">
+              <style> .btn-primary-forecast {
+		background-color: #0cbcf5; 
+		color: black; 
+		padding: 10px 20px; 
+		border: none; 
+		border-radius: 5px;
+		font-size: 16px; 
+		font: Open sans;
+		font-weight: bold;
+		cursor: pointer; 
+	}
+	.btn-primary-forecast:hover {
+		background-color: #53d0f8;
+	}
+	.btn-primary-forecast:active {
+		background-color: #004aad;
+		color: White;
+	} </style>
+              <div>
+                <button class="btn btn-primary-forecast" id="forecast_rainfall-btn">Forecast</button>
+              </div>
+            </div>
+            <a href="#sec-d91f" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
             <img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/rainfall_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">
           </div>
         </div>
@@ -90,11 +180,37 @@
     </section>
     <section class="u-clearfix u-custom-color-1 u-section-3" id="sec-b9f2">
       <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-border-2 u-border-custom-color-3 u-container-style u-expanded-width u-group u-palette-5-dark-3 u-radius u-shape-round u-group-1">
+        <div class="u-border-2 u-border-custom-color-3 u-container-style u-expanded-width u-group u-palette-5-dark-3 u-radius u-shape-round u-group-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
           <div class="u-container-layout u-container-layout-1">
             <h4 class="u-custom-font u-font-lato u-text u-text-default u-text-1">Forecasted Drawdown</h4>
-            <img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/drawdown_plot.png' %}" alt="" data-image-width="2000" data-image-height="1000">
-            <a href="#sec-cb9f" class="u-btn u-btn-round u-button-style u-dialog-link u-hover-palette-1-light-1 u-palette-1-base u-radius u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
+            <!-- <img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/drawdown_plot.png' %}" alt="" data-image-width="2000" data-image-height="1000"> -->
+            <div class="plot-container">
+              {{ drawdown_interact_plot|safe }}
+           </div>
+            <div class="u-clearfix u-custom-html u-custom-html-1">
+              <style> .btn-primary-forecast {
+		background-color: #0cbcf5; 
+		color: black; 
+		padding: 10px 20px; 
+		border: none; 
+		border-radius: 5px;
+		font-size: 16px; 
+		font: Open sans;
+		font-weight: bold;
+		cursor: pointer; 
+	}
+	.btn-primary-forecast:hover {
+		background-color: #53d0f8;
+	}
+	.btn-primary-forecast:active {
+		background-color: #004aad;
+		color: White;
+	} </style>
+              <div>
+                <button class="btn btn-primary-forecast" id="forecast_drawdown-btn">Forecast</button>
+              </div>
+            </div>
+            <a href="#sec-cb9f" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
             <img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/drawdown_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">
           </div>
         </div>
@@ -109,57 +225,64 @@
     
     
     
-        
     <footer class="u-align-center u-clearfix u-footer u-grey-90 u-footer" id="sec-fab5"><div class="u-clearfix u-sheet u-sheet-1">
-      <a href="#" class="u-image u-logo u-image-1" data-image-width="301" data-image-height="201">
-        <img src="{% static 'img/logo_footer.png' %}" class="u-logo-image u-logo-image-1">
-      </a>
-      <p class="u-text u-text-default u-text-1">hydrocisionadmin@gmail.com </p><span class="u-file-icon u-icon u-text-black u-icon-1"><img src="{% static 'img/gmail.png' %}" alt=""></span>
-      <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
-        <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 0.75rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
-          <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
-            <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-502c"></use></svg>
-            <svg class="u-svg-content" version="1.1" id="svg-502c" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
-</g></svg>
-          </a>
-        </div>
-        <div class="u-custom-menu u-nav-container">
-          <ul class="u-custom-font u-font-lato u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'dashboard' %}" style="padding: 10px 0px;">Dashboard</a>
-</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'forecast' %}" style="padding: 10px 0px;">Forecast</a>
-</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'business_zone' %}" style="padding: 10px 0px;">Business zones</a>
-</li></ul>
-        </div>
-        <div class="u-custom-menu u-nav-container-collapse">
-          <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
-            <div class="u-inner-container-layout u-sidenav-overflow">
-              <div class="u-menu-close"></div>
-              <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'forecast' %}">Forecast</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'business_zone' %}">Business zones</a>
-</li></ul>
-            </div>
+        <p class="u-custom-font u-font-merriweather u-text u-text-1">OUR LOCATION </p>
+        <a href="#" class="u-image u-logo u-image-1" data-image-width="301" data-image-height="201">
+          <img src="{% static 'img/logo_footer.png' %}" class="u-logo-image u-logo-image-1">
+        </a>
+        <p class="u-custom-font u-font-merriweather u-text u-text-default u-text-2">MENU </p>
+        <div class="u-grey-light-2 u-map u-map-1">
+          <div class="embed-responsive">
+            <iframe class="embed-responsive-item" src="https://maps.google.com/maps?output=embed&amp;q=Manila%20Water%20Balara%20Business%20Area%0AQuezon%20City%0AQuezon%20City%0APhilippines&amp;z=10&amp;t=m" data-map="JTdCJTIyYWRkcmVzcyUyMiUzQSUyMk1hbmlsYSUyMFdhdGVyJTIwQmFsYXJhJTIwQnVzaW5lc3MlMjBBcmVhJTVDblF1ZXpvbiUyMENpdHklNUNuUXVlem9uJTIwQ2l0eSU1Q25QaGlsaXBwaW5lcyUyMiUyQyUyMnpvb20lMjIlM0ExMCUyQyUyMnR5cGVJZCUyMiUzQSUyMnJvYWQlMjIlMkMlMjJsYW5nJTIyJTNBbnVsbCUyQyUyMmFwaUtleSUyMiUzQW51bGwlMkMlMjJtYXJrZXJzJTIyJTNBJTVCJTVEJTdE"></iframe>
           </div>
-          <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
         </div>
-      </nav>
-    </div></footer>
-
-
-
-
-  <section class="u-align-center u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-dialog-section-7" id="sec-d91f">
-      <div class="u-align-center-lg u-align-center-md u-align-center-xl u-border-1 u-border-palette-2-base u-container-style u-dialog u-palette-1-light-1 u-radius u-shape-round u-dialog-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
+        <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
+          <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 0.75rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
+            <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
+              <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-502c"></use></svg>
+              <svg class="u-svg-content" version="1.1" id="svg-502c" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+</g></svg>
+            </a>
+          </div>
+          <div class="u-custom-menu u-nav-container">
+            <ul class="u-custom-font u-font-lato u-nav u-spacing-20 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Forecast</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Business zones</a>
+</li></ul>
+          </div>
+          <div class="u-custom-menu u-nav-container-collapse">
+            <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+              <div class="u-inner-container-layout u-sidenav-overflow">
+                <div class="u-menu-close"></div>
+                <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Forecast</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Business zones</a>
+</li></ul>
+              </div>
+            </div>
+            <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+          </div>
+        </nav><span class="u-file-icon u-icon u-text-white u-icon-1"><img src="{% static 'img/gmail.png' %}" alt=""></span>
+        <p class="u-text u-text-default u-text-3">
+          <a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-palette-1-base u-btn-1" data-href="mailto:hydrocisionadmin@gmail.com">hydrocisionadmin@gmail.com </a>
+        </p>
+      </div></footer>
+    <section class="u-backlink u-clearfix u-grey-80">
+      <p class="u-text">
+        <span>This site was created with the </span>
+        <a class="u-link" href="https://nicepage.com/" target="_blank" rel="nofollow">
+          <span>Nicepage</span>
+        </a>
+      </p>
+    </section>
+  <section class="u-align-center u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-valign-middle u-dialog-section-7" id="sec-d91f">
+      <div class="u-align-center-lg u-align-center-md u-align-center-xl u-border-1 u-border-palette-2-base u-container-style u-custom-color-3 u-dialog u-radius u-shape-round u-dialog-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
         <div class="u-container-layout u-container-layout-1">
-          <h3 class="u-custom-font u-font-georgia u-text u-text-body-alt-color u-text-1">EVALUATION METRIC</h3>
-          <div class="u-palette-1-light-2 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-2">{{ act_rain_smape }} % </p>
-          <div class="u-palette-1-light-2 u-preserve-proportions u-shape u-shape-circle u-shape-2" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-3">{{ fore_rain_smape }} %</p>
-          <p class="u-text u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""> ACTUAL<br>
-            <span style="font-size: 1.25rem;">(</span>Accuracy<span style="font-size: 1.25rem;">)</span>
-          </p>
-          <p class="u-text u-text-5" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">FORECASTED </p>
-          <p class="u-custom-font u-font-georgia u-text u-text-body-alt-color u-text-6" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">RAINFALL <span style="font-size: 1.125rem;">(millimeter)</span>
+          <h3 class="u-custom-font u-font-georgia u-text u-text-body-color u-text-1">EVALUATION METRIC</h3>
+          <div class="u-custom-color-5 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
+          <p class="u-custom-font u-text u-text-body-color u-text-2">95.32 % </p>
+          <p class="u-text u-text-body-color u-text-3" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Accuracy</p>
+          <p class="u-custom-font u-font-merriweather u-text u-text-body-color u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">RAINFALL <span style="font-size: 1.125rem;">(millimeter)</span>
           </p>
           <div class="u-table u-table-responsive u-table-1">
             <table class="u-table-entity">
@@ -184,75 +307,59 @@
               </tbody>
             </table>
           </div>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-default u-text-7">DATE</p>
-          <p class="u-text u-text-8">{{forecasted_date}} </p>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-9">FORECASTED</p>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-10">ACTUAL</p>
-          <p class="u-text u-text-11">{{forecast_rain}}</p>
-          <p class="u-text u-text-12">{{actual_rain}} </p>
-        </div><button class="u-dialog-close-button u-icon u-text-grey-50 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 413.348 413.348" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-5801"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 413.348 413.348" id="svg-5801"><path d="m413.348 24.354-24.354-24.354-182.32 182.32-182.32-182.32-24.354 24.354 182.32 182.32-182.32 182.32 24.354 24.354 182.32-182.32 182.32 182.32 24.354-24.354-182.32-182.32z"></path></svg></button>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-default u-text-5">DATE</p>
+          <p class="u-text u-text-body-color u-text-6">01-Jan-24 </p>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-7">FORECASTED</p>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-8">ACTUAL</p>
+          <p class="u-text u-text-body-color u-text-9">1.23</p>
+          <p class="u-text u-text-body-color u-text-10">2.34 </p>
+        </div><button class="u-dialog-close-button u-icon u-text-grey-15 u-icon-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 413.348 413.348"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-5801"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 413.348 413.348" id="svg-5801"><path d="m413.348 24.354-24.354-24.354-182.32 182.32-182.32-182.32-24.354 24.354 182.32 182.32-182.32 182.32 24.354 24.354 182.32-182.32 182.32 182.32 24.354-24.354-182.32-182.32z"></path></svg></button>
       </div>
     </section><style>.u-dialog-section-7 .u-dialog-1 {
   box-shadow: 0 0 14px 0 rgba(0,0,0,0.3);
   --radius: 30px;
-  width: 439px;
+  width: 438px;
   height: auto;
-  min-height: 569px;
-  margin: 70px calc(((100% - 1140px) / 2)  + 339px) 60px auto;
+  min-height: 497px;
+  margin: 0 auto;
 }
 
 .u-dialog-section-7 .u-container-layout-1 {
-  padding: 0;
+  padding: 0 0 1px;
 }
 
 .u-dialog-section-7 .u-text-1 {
   font-size: 1.875rem;
-  margin: 39px 2px 0;
+  margin: 33px 2px 0;
 }
 
 .u-dialog-section-7 .u-shape-1 {
   width: 153px;
   height: 153px;
   box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
-  margin: 27px 39px 0 auto;
+  margin: 31px auto 0 137px;
 }
 
 .u-dialog-section-7 .u-text-2 {
   font-family: ABeeZee;
   font-size: 1.625rem;
   font-weight: 700;
-  margin: -96px 39px 0 244px;
-}
-
-.u-dialog-section-7 .u-shape-2 {
-  width: 153px;
-  height: 153px;
-  box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
-  margin: -98px auto 0 39px;
+  margin: -106px 147px 0 137px;
 }
 
 .u-dialog-section-7 .u-text-3 {
-  font-family: ABeeZee;
-  font-size: 1.625rem;
-  font-weight: 700;
-  margin: -96px 246px 0 39px;
+  font-style: italic;
+  margin: 1px 168px 0 157px;
 }
 
 .u-dialog-section-7 .u-text-4 {
-  margin: 75px 3px 0 209px;
-}
-
-.u-dialog-section-7 .u-text-5 {
-  margin: -45px 246px 0 39px;
-}
-
-.u-dialog-section-7 .u-text-6 {
   font-size: 1.5rem;
-  margin: 43px 33px 0;
+  margin: 85px 33px 0;
 }
 
 .u-dialog-section-7 .u-table-1 {
   width: 371px;
+  height: 98px;
   margin: 15px auto 0;
 }
 
@@ -276,156 +383,131 @@
   height: 47px;
 }
 
-.u-dialog-section-7 .u-text-7 {
+.u-dialog-section-7 .u-text-5 {
   font-weight: 700;
   margin: -84px auto 0 80px;
 }
 
-.u-dialog-section-7 .u-text-8 {
+.u-dialog-section-7 .u-text-6 {
   font-family: "Open Sans", sans-serif;
   margin: 13px 252px 0 33px;
 }
 
-.u-dialog-section-7 .u-text-9 {
+.u-dialog-section-7 .u-text-7 {
   font-size: 1rem;
   font-weight: 700;
   margin: -69px 143px 0 186px;
 }
 
-.u-dialog-section-7 .u-text-10 {
+.u-dialog-section-7 .u-text-8 {
   font-size: 1rem;
   font-weight: 700;
   margin: -26px 33px 0 297px;
 }
 
-.u-dialog-section-7 .u-text-11 {
+.u-dialog-section-7 .u-text-9 {
   font-family: "Open Sans", sans-serif;
   margin: 15px 141px 0 186px;
 }
 
-.u-dialog-section-7 .u-text-12 {
+.u-dialog-section-7 .u-text-10 {
   font-family: "Open Sans", sans-serif;
   margin: -29px 33px 0 296px;
 }
 
 .u-dialog-section-7 .u-icon-1 {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   left: auto;
-  top: 23px;
+  top: 15px;
   position: absolute;
-  right: 30px;
+  right: 16px;
+  padding: 0;
 }
 
 @media (max-width: 1199px) {
-  .u-dialog-section-7 .u-dialog-1 {
-    width: 439px;
-    margin-right: calc(((100% - 940px) / 2) + 339px);
-  }
-
   .u-dialog-section-7 .u-text-1 {
-    margin-top: 218px;
+    margin-top: 215px;
     margin-left: 2px;
     margin-right: 2px;
   }
 
   .u-dialog-section-7 .u-shape-1 {
     margin-top: 33px;
+    margin-left: 137px;
   }
 
   .u-dialog-section-7 .u-text-2 {
     width: 153px;
     margin-top: -163px;
-    margin-right: 39px;
-    margin-left: 244px;
-  }
-
-  .u-dialog-section-7 .u-shape-2 {
-    margin-top: -98px;
+    margin-right: 147px;
+    margin-left: 137px;
   }
 
   .u-dialog-section-7 .u-text-3 {
-    width: 162px;
-    margin-top: 219px;
-    margin-right: 246px;
+    width: 225px;
+    margin-top: 26px;
+    margin-right: 168px;
+    margin-left: 157px;
   }
 
   .u-dialog-section-7 .u-text-4 {
-    width: 225px;
-    margin-top: -290px;
-    margin-right: 3px;
-    margin-left: 209px;
-  }
-
-  .u-dialog-section-7 .u-text-5 {
-    width: 188px;
-    margin-top: 145px;
-    margin-right: 246px;
-  }
-
-  .u-dialog-section-7 .u-text-6 {
-    margin-top: -395px;
-    margin-left: 33px;
-    margin-right: 33px;
+    width: 370px;
+    margin-top: -221px;
   }
 
   .u-dialog-section-7 .u-table-1 {
-    width: 371px;
     margin-top: 9px;
   }
 
-  .u-dialog-section-7 .u-text-7 {
+  .u-dialog-section-7 .u-text-5 {
+    width: 44px;
     margin-top: -84px;
     margin-left: 80px;
   }
 
-  .u-dialog-section-7 .u-text-8 {
+  .u-dialog-section-7 .u-text-6 {
     margin-right: 252px;
     margin-left: 33px;
+    width: 151px;
   }
 
-  .u-dialog-section-7 .u-text-9 {
+  .u-dialog-section-7 .u-text-7 {
+    width: 107px;
     margin-top: -69px;
     margin-right: 143px;
     margin-left: 186px;
   }
 
-  .u-dialog-section-7 .u-text-10 {
+  .u-dialog-section-7 .u-text-8 {
+    width: 106px;
     margin-top: -26px;
     margin-right: 33px;
     margin-left: 297px;
   }
 
-  .u-dialog-section-7 .u-text-11 {
+  .u-dialog-section-7 .u-text-9 {
     margin-right: 141px;
     margin-left: 186px;
+    width: 109px;
   }
 
-  .u-dialog-section-7 .u-text-12 {
+  .u-dialog-section-7 .u-text-10 {
+    width: 107px;
     margin-top: -29px;
     margin-right: 33px;
     margin-left: 296px;
   }
 }
 
-@media (max-width: 991px) {
-  .u-dialog-section-7 .u-dialog-1 {
-    margin-right: calc(((100% - 720px) / 2) + 281px);
-  }
-}
-
 @media (max-width: 767px) {
-  .u-dialog-section-7 .u-dialog-1 {
-    margin-right: calc(((100% - 540px) / 2) + 101px);
-  }
-
   .u-dialog-section-7 .u-container-layout-1 {
     padding-left: 30px;
     padding-right: 30px;
   }
 
   .u-dialog-section-7 .u-text-1 {
-    margin-top: 196px;
+    margin-top: 193px;
   }
 
   .u-dialog-section-7 .u-shape-1 {
@@ -438,21 +520,12 @@
   }
 
   .u-dialog-section-7 .u-text-3 {
-    font-size: 1rem;
-    margin-top: 242px;
+    margin-top: 163px;
   }
 
   .u-dialog-section-7 .u-text-4 {
-    margin-top: -160px;
-  }
-
-  .u-dialog-section-7 .u-text-5 {
-    margin-top: -2px;
-  }
-
-  .u-dialog-section-7 .u-text-6 {
     font-size: 1.875rem;
-    margin-top: -398px;
+    margin-top: -374px;
   }
 
   .u-dialog-section-7 .u-table-1 {
@@ -463,7 +536,6 @@
 @media (max-width: 575px) {
   .u-dialog-section-7 .u-dialog-1 {
     width: 340px;
-    margin-right: calc(((100% - 340px) / 2));
   }
 
   .u-dialog-section-7 .u-container-layout-1 {
@@ -473,35 +545,26 @@
 
   .u-dialog-section-7 .u-text-1 {
     font-size: 1.5rem;
-    margin-top: 247px;
+    margin-top: 244px;
     margin-left: 0;
     margin-right: 0;
   }
 
   .u-dialog-section-7 .u-text-2 {
     margin-top: -10px;
-    margin-left: 145px;
+    margin-right: 49px;
   }
 
   .u-dialog-section-7 .u-text-3 {
-    margin-top: 330px;
-    margin-right: 147px;
+    margin-top: 189px;
+    margin-right: 119px;
+    margin-left: 108px;
   }
 
   .u-dialog-section-7 .u-text-4 {
-    margin-top: -222px;
-    margin-right: 0;
-    margin-left: 113px;
-  }
-
-  .u-dialog-section-7 .u-text-5 {
-    margin-top: -16px;
-    margin-left: 0;
-    margin-right: 186px;
-  }
-
-  .u-dialog-section-7 .u-text-6 {
     font-size: 1.5rem;
+    width: 340px;
+    margin-top: -389px;
     margin-left: 0;
     margin-right: 0;
   }
@@ -511,43 +574,38 @@
     margin-top: 12px;
   }
 
-  .u-dialog-section-7 .u-text-8 {
-    margin-right: 186px;
+  .u-dialog-section-7 .u-text-6 {
+    margin-right: 187px;
     margin-left: 0;
   }
 
-  .u-dialog-section-7 .u-text-9 {
+  .u-dialog-section-7 .u-text-7 {
     margin-right: 113px;
     margin-left: 137px;
   }
 
-  .u-dialog-section-7 .u-text-10 {
+  .u-dialog-section-7 .u-text-8 {
     margin-right: 51px;
-    margin-left: 231px;
+    margin-left: 232px;
   }
 
-  .u-dialog-section-7 .u-text-11 {
+  .u-dialog-section-7 .u-text-9 {
     margin-right: 92px;
     margin-left: 137px;
   }
 
-  .u-dialog-section-7 .u-text-12 {
+  .u-dialog-section-7 .u-text-10 {
     margin-right: 0;
-    margin-left: 230px;
+    margin-left: 231px;
   }
 }</style><section class="u-align-center u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-valign-middle u-dialog-section-8" id="sec-e004">
-      <div class="u-align-center-lg u-align-center-md u-align-center-xl u-border-1 u-border-palette-2-base u-container-style u-dialog u-palette-1-light-1 u-radius u-shape-round u-dialog-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
+      <div class="u-align-center-lg u-align-center-md u-align-center-xl u-border-1 u-border-palette-2-base u-container-style u-custom-color-3 u-dialog u-radius u-shape-round u-dialog-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
         <div class="u-container-layout u-container-layout-1">
-          <h3 class="u-custom-font u-font-georgia u-text u-text-body-alt-color u-text-1">EVALUATION METRIC</h3>
-          <div class="u-palette-1-light-2 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-2">{{ act_smape }} % </p>
-          <div class="u-palette-1-light-2 u-preserve-proportions u-shape u-shape-circle u-shape-2" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-3">{{ fore_smape }} %</p>
-          <p class="u-text u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""> ACTUAL<br>
-            <span style="font-size: 1.25rem;">(</span>Accuracy<span style="font-size: 1.25rem;">)</span>
-          </p>
-          <p class="u-text u-text-5" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">FORECASTED </p>
-          <p class="u-custom-font u-font-georgia u-text u-text-body-alt-color u-text-default u-text-6" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">WATER LEVEL <span style="font-size: 1.125rem;">(meter)</span>
+          <h3 class="u-custom-font u-font-georgia u-text u-text-black u-text-1">EVALUATION METRIC</h3>
+          <div class="u-custom-color-5 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
+          <p class="u-custom-font u-text u-text-body-color u-text-2">95.32 % </p>
+          <p class="u-text u-text-body-color u-text-3" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Accuracy</p>
+          <p class="u-custom-font u-font-merriweather u-text u-text-body-color u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">WATER LEVEL <span style="font-size: 1.125rem;">(meter)</span>
           </p>
           <div class="u-table u-table-responsive u-table-1">
             <table class="u-table-entity">
@@ -572,20 +630,20 @@
               </tbody>
             </table>
           </div>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-7">DATE</p>
-          <p class="u-text u-text-8">{{ forecasted_date }}</p>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-9">FORECASTED</p>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-10">ACTUAL</p>
-          <p class="u-text u-text-11">{{ forecasted }}</p>
-          <p class="u-text u-text-12">{{ actual }}</p>
-        </div><button class="u-dialog-close-button u-icon u-text-grey-50 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 329.26933 329" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-ea5c"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 329.26933 329" id="svg-ea5c"><path d="m194.800781 164.769531 128.210938-128.214843c8.34375-8.339844 8.34375-21.824219 0-30.164063-8.339844-8.339844-21.824219-8.339844-30.164063 0l-128.214844 128.214844-128.210937-128.214844c-8.34375-8.339844-21.824219-8.339844-30.164063 0-8.34375 8.339844-8.34375 21.824219 0 30.164063l128.210938 128.214843-128.210938 128.214844c-8.34375 8.339844-8.34375 21.824219 0 30.164063 4.15625 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921875-2.089844 15.082031-6.25l128.210937-128.214844 128.214844 128.214844c4.160156 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921874-2.089844 15.082031-6.25 8.34375-8.339844 8.34375-21.824219 0-30.164063zm0 0"></path></svg></button>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-5">DATE</p>
+          <p class="u-text u-text-body-color u-text-6">01-Jan-24 </p>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-7">FORECASTED</p>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-8">ACTUAL</p>
+          <p class="u-text u-text-body-color u-text-9">74.23</p>
+          <p class="u-text u-text-body-color u-text-10">74.40</p>
+        </div><button class="u-dialog-close-button u-icon u-text-grey-15 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 329.26933 329"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-ea5c"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 329.26933 329" id="svg-ea5c"><path d="m194.800781 164.769531 128.210938-128.214843c8.34375-8.339844 8.34375-21.824219 0-30.164063-8.339844-8.339844-21.824219-8.339844-30.164063 0l-128.214844 128.214844-128.210937-128.214844c-8.34375-8.339844-21.824219-8.339844-30.164063 0-8.34375 8.339844-8.34375 21.824219 0 30.164063l128.210938 128.214843-128.210938 128.214844c-8.34375 8.339844-8.34375 21.824219 0 30.164063 4.15625 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921875-2.089844 15.082031-6.25l128.210937-128.214844 128.214844 128.214844c4.160156 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921874-2.089844 15.082031-6.25 8.34375-8.339844 8.34375-21.824219 0-30.164063zm0 0"></path></svg></button>
       </div>
     </section><style>.u-dialog-section-8 .u-dialog-1 {
   box-shadow: 0 0 14px 0 rgba(0,0,0,0.3);
   --radius: 30px;
   width: 438px;
   height: auto;
-  min-height: 568px;
+  min-height: 497px;
   margin: 60px auto;
 }
 
@@ -595,53 +653,38 @@
 
 .u-dialog-section-8 .u-text-1 {
   font-size: 1.875rem;
-  margin: 31px 4px 0 0;
+  margin: 35px 2px 0;
 }
 
 .u-dialog-section-8 .u-shape-1 {
   width: 153px;
   height: 153px;
   box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
-  margin: 34px 47px 0 auto;
+  margin: 31px auto 0;
 }
 
 .u-dialog-section-8 .u-text-2 {
   font-family: ABeeZee;
   font-size: 1.625rem;
   font-weight: 700;
-  margin: -98px 47px 0 236px;
-}
-
-.u-dialog-section-8 .u-shape-2 {
   width: 153px;
-  height: 153px;
-  box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
-  margin: -96px auto 0 47px;
+  margin: -110px auto 0;
 }
 
 .u-dialog-section-8 .u-text-3 {
-  font-family: ABeeZee;
-  font-size: 1.625rem;
-  font-weight: 700;
-  margin: -97px 236px 0 47px;
+  width: 127px;
+  margin: 4px auto 0;
 }
 
 .u-dialog-section-8 .u-text-4 {
-  margin: 67px 6px 0 195px;
-}
-
-.u-dialog-section-8 .u-text-5 {
-  margin: -49px 224px 0 25px;
-}
-
-.u-dialog-section-8 .u-text-6 {
   font-size: 1.5rem;
-  margin: 51px auto 0;
+  margin: 75px 37px 0 28px;
 }
 
 .u-dialog-section-8 .u-table-1 {
   width: 371px;
-  margin: 11px auto 0 31px;
+  height: 98px;
+  margin: 16px auto 0 30px;
 }
 
 .u-block-7511-15 {
@@ -664,32 +707,32 @@
   height: 47px;
 }
 
-.u-dialog-section-8 .u-text-7 {
+.u-dialog-section-8 .u-text-5 {
   font-weight: 700;
-  margin: -86px 255px 0 25px;
+  margin: -85px 252px 0 28px;
 }
 
-.u-dialog-section-8 .u-text-8 {
+.u-dialog-section-8 .u-text-6 {
   margin: 21px 255px 0 30px;
 }
 
-.u-dialog-section-8 .u-text-9 {
+.u-dialog-section-8 .u-text-7 {
   font-size: 1rem;
   font-weight: 700;
-  margin: -77px 143px 0 181px;
+  margin: -77px 143px 0 182px;
 }
 
-.u-dialog-section-8 .u-text-10 {
+.u-dialog-section-8 .u-text-8 {
   font-size: 1rem;
   font-weight: 700;
   margin: -25px 33px 0 293px;
 }
 
-.u-dialog-section-8 .u-text-11 {
-  margin: 22px 143px 0 182px;
+.u-dialog-section-8 .u-text-9 {
+  margin: 23px 143px 0 182px;
 }
 
-.u-dialog-section-8 .u-text-12 {
+.u-dialog-section-8 .u-text-10 {
   margin: -29px 36px 0 293px;
 }
 
@@ -697,82 +740,59 @@
   width: 16px;
   height: 16px;
   left: auto;
-  top: 19px;
+  top: 17px;
   position: absolute;
-  right: 28px;
+  right: 27px;
 }
 
 @media (max-width: 1199px) {
-  .u-dialog-section-8 .u-text-1 {
-    margin-right: 4px;
-  }
-
   .u-dialog-section-8 .u-shape-1 {
-    margin-right: 47px;
+    width: 153px;
   }
 
   .u-dialog-section-8 .u-text-2 {
-    margin-top: -98px;
-    margin-right: 47px;
-    margin-left: 236px;
-  }
-
-  .u-dialog-section-8 .u-shape-2 {
-    margin-top: -96px;
-    margin-left: 47px;
-  }
-
-  .u-dialog-section-8 .u-text-3 {
-    margin-top: -97px;
-    margin-right: 236px;
-    margin-left: 47px;
+    margin-top: -110px;
   }
 
   .u-dialog-section-8 .u-text-4 {
-    margin-right: 6px;
-    margin-left: 195px;
-  }
-
-  .u-dialog-section-8 .u-text-5 {
-    margin-top: -49px;
-    margin-right: 224px;
-    margin-left: 25px;
+    margin-right: 37px;
+    margin-left: 28px;
   }
 
   .u-dialog-section-8 .u-table-1 {
     height: 94px;
-    margin-left: 31px;
+    margin-left: 30px;
   }
 
-  .u-dialog-section-8 .u-text-7 {
-    margin-top: -86px;
-    margin-right: 255px;
-    margin-left: 25px;
+  .u-dialog-section-8 .u-text-5 {
+    margin-top: -85px;
+    margin-right: 252px;
+    margin-left: 28px;
   }
 
-  .u-dialog-section-8 .u-text-8 {
+  .u-dialog-section-8 .u-text-6 {
     margin-right: 255px;
     margin-left: 30px;
   }
 
-  .u-dialog-section-8 .u-text-9 {
+  .u-dialog-section-8 .u-text-7 {
     margin-top: -77px;
     margin-right: 143px;
-    margin-left: 181px;
+    margin-left: 182px;
   }
 
-  .u-dialog-section-8 .u-text-10 {
+  .u-dialog-section-8 .u-text-8 {
     margin-top: -25px;
     margin-right: 33px;
     margin-left: 293px;
   }
 
-  .u-dialog-section-8 .u-text-11 {
+  .u-dialog-section-8 .u-text-9 {
     margin-right: 143px;
     margin-left: 182px;
   }
 
-  .u-dialog-section-8 .u-text-12 {
+  .u-dialog-section-8 .u-text-10 {
     margin-top: -29px;
     margin-right: 36px;
     margin-left: 293px;
@@ -799,31 +819,15 @@
     margin-left: 200px;
   }
 
-  .u-dialog-section-8 .u-shape-2 {
-    margin-top: -109px;
-    margin-left: -6px;
-  }
-
   .u-dialog-section-8 .u-text-3 {
-    font-size: 1rem;
-    margin-right: 255px;
-    margin-left: -6px;
-  }
-
-  .u-dialog-section-8 .u-text-4 {
-    margin-top: 50px;
+    margin-top: 22px;
     margin-right: 12px;
     margin-left: 164px;
   }
 
-  .u-dialog-section-8 .u-text-5 {
-    margin-right: 255px;
-    margin-left: -6px;
-  }
-
-  .u-dialog-section-8 .u-text-6 {
+  .u-dialog-section-8 .u-text-4 {
     font-size: 1rem;
-    margin-top: 43px;
+    margin-top: 20px;
     margin-left: 89px;
   }
 
@@ -831,25 +835,29 @@
     margin-left: -12px;
   }
 
-  .u-dialog-section-8 .u-text-7 {
-    margin-left: 35px;
+  .u-dialog-section-8 .u-text-5 {
+    margin-top: -108px;
   }
 
-  .u-dialog-section-8 .u-text-8 {
+  .u-dialog-section-8 .u-text-6 {
     margin-right: 275px;
     margin-left: -12px;
   }
 
-  .u-dialog-section-8 .u-text-9 {
-    margin-left: 182px;
+  .u-dialog-section-8 .u-text-7 {
+    margin-top: -66px;
   }
 
-  .u-dialog-section-8 .u-text-11 {
+  .u-dialog-section-8 .u-text-8 {
+    margin-top: -25px;
+  }
+
+  .u-dialog-section-8 .u-text-9 {
     margin-right: 156px;
     margin-left: 144px;
   }
 
-  .u-dialog-section-8 .u-text-12 {
+  .u-dialog-section-8 .u-text-10 {
     margin-right: 42px;
     margin-left: 258px;
   }
@@ -880,27 +888,13 @@
     margin-left: 129px;
   }
 
-  .u-dialog-section-8 .u-shape-2 {
-    margin-top: -109px;
-    margin-left: -15px;
-  }
-
   .u-dialog-section-8 .u-text-3 {
-    margin-right: 166px;
-    margin-left: -15px;
-  }
-
-  .u-dialog-section-8 .u-text-4 {
     margin-right: 21px;
     margin-left: 57px;
   }
 
-  .u-dialog-section-8 .u-text-5 {
-    margin-right: 172px;
-    margin-left: -21px;
-  }
-
-  .u-dialog-section-8 .u-text-6 {
+  .u-dialog-section-8 .u-text-4 {
+    margin-right: 0;
     margin-left: 80px;
   }
 
@@ -910,48 +904,45 @@
     margin-right: -21px;
   }
 
-  .u-dialog-section-8 .u-text-7 {
+  .u-dialog-section-8 .u-text-5 {
     margin-right: 182px;
-    margin-left: 26px;
+    margin-left: 0;
   }
 
-  .u-dialog-section-8 .u-text-8 {
+  .u-dialog-section-8 .u-text-6 {
     margin-right: 186px;
     margin-left: -21px;
   }
 
+  .u-dialog-section-8 .u-text-7 {
+    margin-top: -66px;
+    margin-right: 94px;
+    margin-left: 133px;
+  }
+
+  .u-dialog-section-8 .u-text-8 {
+    margin-top: -50px;
+    margin-right: 0;
+    margin-left: 228px;
+  }
+
   .u-dialog-section-8 .u-text-9 {
-    margin-right: 116px;
-    margin-left: 130px;
-  }
-
-  .u-dialog-section-8 .u-text-10 {
-    margin-right: 59px;
-    margin-left: 234px;
-  }
-
-  .u-dialog-section-8 .u-text-11 {
     margin-right: 116px;
     margin-left: 86px;
   }
 
-  .u-dialog-section-8 .u-text-12 {
+  .u-dialog-section-8 .u-text-10 {
     margin-right: 21px;
     margin-left: 181px;
   }
 }</style><section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-valign-middle u-dialog-section-11" id="sec-cb9f">
-      <div class="u-align-center-lg u-align-center-md u-align-center-xl u-border-1 u-border-palette-2-base u-container-style u-dialog u-palette-1-light-1 u-radius u-shape-round u-dialog-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
+      <div class="u-align-center-lg u-align-center-md u-align-center-xl u-border-1 u-border-palette-2-base u-container-style u-custom-color-3 u-dialog u-radius u-shape-round u-dialog-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
         <div class="u-container-layout u-container-layout-1">
-          <h3 class="u-custom-font u-font-georgia u-text u-text-body-alt-color u-text-1">EVALUATION METRIC</h3>
-          <div class="u-palette-1-light-2 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-2">{{ fore_drawdown_smape }} %</p>
-          <div class="u-palette-1-light-2 u-preserve-proportions u-shape u-shape-circle u-shape-2" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-3">{{ act_drawdown_smape }} % </p>
-          <p class="u-text u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""> ACTUAL<br>
-            <span style="font-size: 1.25rem;">(</span>Accuracy<span style="font-size: 1.25rem;">)</span>
-          </p>
-          <p class="u-text u-text-5" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">FORECASTED </p>
-          <p class="u-custom-font u-font-georgia u-text u-text-body-alt-color u-text-default u-text-6" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">DRAWDOWN<span style="font-size: 1.125rem;"> ( cubic meter ) </span>
+          <h3 class="u-custom-font u-font-georgia u-text u-text-body-color u-text-1">EVALUATION METRIC</h3>
+          <div class="u-custom-color-5 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
+          <p class="u-custom-font u-text u-text-body-color u-text-2">95.32 % </p>
+          <p class="u-text u-text-body-color u-text-3" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Accuracy</p>
+          <p class="u-custom-font u-font-merriweather u-text u-text-body-color u-text-default u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">DRAWDOWN <span style="font-size: 1.125rem;"> ( cubic meter ) </span>
           </p>
           <div class="u-table u-table-responsive u-table-1">
             <table class="u-table-entity">
@@ -961,7 +952,7 @@
                 <col width="29%">
               </colgroup>
               <thead class="u-table-header">
-                <tr style="height: 47px;">
+                <tr style="height: 26px;">
                   <th class="u-border-3 u-border-grey-dark-1 u-table-cell u-table-cell-1"></th>
                   <th class="u-border-3 u-border-grey-dark-1 u-table-cell u-table-cell-2"></th>
                   <th class="u-border-3 u-border-grey-dark-1 u-table-cell u-table-cell-3"></th>
@@ -976,77 +967,62 @@
               </tbody>
             </table>
           </div>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-7">DATE</p>
-          <p class="u-text u-text-8">{{ forecasted_date }} </p>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-9">FORECASTED</p>
-          <p class="u-custom-font u-heading-font u-text u-text-body-alt-color u-text-10">ACTUAL</p>
-          <p class="u-text u-text-11">{{ forecast_drawdown }}</p>
-          <p class="u-text u-text-12">{{ actual_drawdown }}</p>
-        </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-efe9"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-efe9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-5">DATE</p>
+          <p class="u-text u-text-body-color u-text-6">01-Jan-24 </p>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-7">FORECASTED</p>
+          <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-8">ACTUAL</p>
+          <p class="u-text u-text-body-color u-text-9">-264000</p>
+          <p class="u-text u-text-body-color u-text-10">132000</p>
+        </div><button class="u-dialog-close-button u-icon u-text-grey-15 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-efe9"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-efe9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
       </div>
     </section><style>.u-dialog-section-11 .u-dialog-1 {
   box-shadow: 0 0 14px 0 rgba(0,0,0,0.3);
   --radius: 30px;
   width: 438px;
   height: auto;
-  min-height: 568px;
+  min-height: 494px;
   margin: 60px auto;
 }
 
 .u-dialog-section-11 .u-container-layout-1 {
-  padding: 0 0 9px;
+  padding: 0;
 }
 
 .u-dialog-section-11 .u-text-1 {
   font-size: 1.875rem;
-  margin: 37px 2px 0;
+  margin: 34px 2px 0;
 }
 
 .u-dialog-section-11 .u-shape-1 {
   width: 153px;
   height: 153px;
   box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
-  margin: 23px auto 0 49px;
+  margin: 32px auto 0 139px;
 }
 
 .u-dialog-section-11 .u-text-2 {
   font-family: ABeeZee;
   font-size: 1.625rem;
   font-weight: 700;
-  margin: -97px 235px 0 51px;
-}
-
-.u-dialog-section-11 .u-shape-2 {
-  width: 153px;
-  height: 153px;
-  box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
-  margin: -97px 49px 0 auto;
+  width: 149px;
+  margin: -103px auto 0;
 }
 
 .u-dialog-section-11 .u-text-3 {
-  font-family: ABeeZee;
-  font-size: 1.625rem;
-  font-weight: 700;
-  margin: -97px 49px 0 238px;
+  font-style: italic;
+  width: 123px;
+  margin: 0 auto;
 }
 
 .u-dialog-section-11 .u-text-4 {
-  margin: 72px 23px 0 208px;
-}
-
-.u-dialog-section-11 .u-text-5 {
-  margin: -45px 217px 0 32px;
-}
-
-.u-dialog-section-11 .u-text-6 {
   font-size: 1.5rem;
-  margin: 58px 66px 0 auto;
+  margin: 78px auto 0;
 }
 
 .u-dialog-section-11 .u-table-1 {
   width: 371px;
   height: 98px;
-  margin: 17px auto 0 32px;
+  margin: 10px auto 0;
 }
 
 .u-block-c9c7-15 {
@@ -1069,36 +1045,36 @@
   height: 47px;
 }
 
-.u-dialog-section-11 .u-text-7 {
+.u-dialog-section-11 .u-text-5 {
   font-weight: 700;
-  margin: -84px 256px 0 32px;
+  margin: -85px 256px 0 33px;
 }
 
-.u-dialog-section-11 .u-text-8 {
+.u-dialog-section-11 .u-text-6 {
   font-family: "Open Sans", sans-serif;
-  margin: 16px 256px 0 32px;
+  margin: 18px 256px 0 33px;
 }
 
-.u-dialog-section-11 .u-text-9 {
+.u-dialog-section-11 .u-text-7 {
   font-size: 1rem;
   font-weight: 700;
   margin: -74px 141px 0 180px;
 }
 
-.u-dialog-section-11 .u-text-10 {
+.u-dialog-section-11 .u-text-8 {
   font-size: 1rem;
   font-weight: 700;
-  margin: -26px 33px 0 296px;
+  margin: -25px 33px 0 296px;
 }
 
-.u-dialog-section-11 .u-text-11 {
+.u-dialog-section-11 .u-text-9 {
   font-family: "Open Sans", sans-serif;
-  margin: 19px 141px 0 180px;
+  margin: 19px 139px 0 183px;
 }
 
-.u-dialog-section-11 .u-text-12 {
+.u-dialog-section-11 .u-text-10 {
   font-family: "Open Sans", sans-serif;
-  margin: -28px 33px 0 295px;
+  margin: -27px 33px 0 295px;
 }
 
 .u-dialog-section-11 .u-icon-1 {
@@ -1107,76 +1083,47 @@
 }
 
 @media (max-width: 1199px) {
+  .u-dialog-section-11 .u-text-1 {
+    margin-right: 2px;
+    margin-left: 2px;
+  }
+
   .u-dialog-section-11 .u-shape-1 {
-    margin-left: 49px;
+    margin-left: 139px;
   }
 
   .u-dialog-section-11 .u-text-2 {
-    margin-top: -97px;
-    margin-right: 235px;
-    margin-left: 51px;
-  }
-
-  .u-dialog-section-11 .u-shape-2 {
-    margin-top: -97px;
-    margin-right: 49px;
-  }
-
-  .u-dialog-section-11 .u-text-3 {
-    margin-top: -97px;
-    margin-right: 49px;
-    margin-left: 238px;
-  }
-
-  .u-dialog-section-11 .u-text-4 {
-    margin-right: 23px;
-    margin-left: 208px;
+    margin-top: -103px;
   }
 
   .u-dialog-section-11 .u-text-5 {
-    margin-top: -45px;
-    margin-right: 217px;
-    margin-left: 32px;
+    margin-top: -85px;
+    margin-right: 256px;
+    margin-left: 33px;
   }
 
   .u-dialog-section-11 .u-text-6 {
-    margin-right: 66px;
-  }
-
-  .u-dialog-section-11 .u-table-1 {
-    margin-left: 32px;
+    margin-right: 255px;
+    margin-left: 33px;
   }
 
   .u-dialog-section-11 .u-text-7 {
-    margin-top: -84px;
-    margin-right: 256px;
-    margin-left: 32px;
+    margin-top: -74px;
   }
 
   .u-dialog-section-11 .u-text-8 {
-    margin-right: 256px;
-    margin-left: 32px;
-  }
-
-  .u-dialog-section-11 .u-text-9 {
-    margin-top: -74px;
-    margin-right: 141px;
-    margin-left: 180px;
-  }
-
-  .u-dialog-section-11 .u-text-10 {
-    margin-top: -26px;
+    margin-top: -25px;
     margin-right: 33px;
     margin-left: 296px;
   }
 
-  .u-dialog-section-11 .u-text-11 {
-    margin-right: 141px;
-    margin-left: 180px;
+  .u-dialog-section-11 .u-text-9 {
+    margin-right: 139px;
+    margin-left: 183px;
   }
 
-  .u-dialog-section-11 .u-text-12 {
-    margin-top: -28px;
+  .u-dialog-section-11 .u-text-10 {
+    margin-top: -27px;
     margin-right: 33px;
     margin-left: 295px;
   }
@@ -1192,11 +1139,7 @@
     font-size: 1rem;
   }
 
-  .u-dialog-section-11 .u-text-3 {
-    font-size: 1rem;
-  }
-
-  .u-dialog-section-11 .u-text-6 {
+  .u-dialog-section-11 .u-text-4 {
     font-size: 1rem;
   }
 }
@@ -1217,57 +1160,52 @@
     margin-left: 51px;
   }
 
-  .u-dialog-section-11 .u-text-2 {
-    margin-top: -98px;
-    margin-right: 186px;
-    margin-left: 2px;
+  .u-dialog-section-11 .u-shape-1 {
+    margin-top: 7px;
   }
 
   .u-dialog-section-11 .u-text-3 {
-    margin-left: 140px;
+    margin-top: 34px;
   }
 
   .u-dialog-section-11 .u-text-4 {
-    margin-right: 0;
-    margin-left: 133px;
-  }
-
-  .u-dialog-section-11 .u-text-5 {
-    margin-right: 151px;
-    margin-left: 0;
+    margin-top: 11px;
   }
 
   .u-dialog-section-11 .u-table-1 {
     width: 340px;
+  }
+
+  .u-dialog-section-11 .u-text-5 {
+    margin-top: -116px;
+    margin-right: 191px;
+    margin-left: 0;
+  }
+
+  .u-dialog-section-11 .u-text-6 {
+    margin-top: 13px;
+    margin-right: 190px;
     margin-left: 0;
   }
 
   .u-dialog-section-11 .u-text-7 {
-    margin-right: 190px;
-    margin-left: 73px;
-  }
-
-  .u-dialog-section-11 .u-text-8 {
-    margin-right: 190px;
-    margin-left: 0;
-  }
-
-  .u-dialog-section-11 .u-text-9 {
-    margin-right: 120px;
-    margin-left: 131px;
-  }
-
-  .u-dialog-section-11 .u-text-10 {
-    margin-right: 79px;
-    margin-left: 231px;
-  }
-
-  .u-dialog-section-11 .u-text-11 {
     margin-right: 92px;
     margin-left: 131px;
   }
 
-  .u-dialog-section-11 .u-text-12 {
+  .u-dialog-section-11 .u-text-8 {
+    margin-top: 0;
+    margin-right: 0;
+    margin-left: 231px;
+  }
+
+  .u-dialog-section-11 .u-text-9 {
+    margin-top: 19px;
+    margin-right: 90px;
+    margin-left: 134px;
+  }
+
+  .u-dialog-section-11 .u-text-10 {
     margin-right: 0;
     margin-left: 230px;
   }

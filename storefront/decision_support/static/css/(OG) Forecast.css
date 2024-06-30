@@ -1,4 +1,4 @@
- .u-section-1 {
+.u-section-1 {
   background-image: none;
 }
 
@@ -149,7 +149,7 @@
     width: 340px;
   }
 
-  .u-section-1 .u-text-2 {
+  .u-section-1 .u-text-1 {
     width: 320px;
     margin-right: 119px;
     margin-left: 0;
@@ -339,13 +339,13 @@
   font-weight: 700;
   font-size: 0.9375rem;
   --radius: 6px;
-  margin: 10px 0 0 auto;
+  margin: 37px auto 0;
 }
 
 .u-section-3 .u-image-2 {
   width: 1021px;
   height: 544px;
-  margin: 60px auto 0;
+  margin: 33px auto 0;
 }
 
 @media (max-width: 1199px) {

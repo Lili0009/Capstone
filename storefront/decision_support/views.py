@@ -1,24 +1,21 @@
 import tensorflow 
 from keras.models import load_model
 from django.shortcuts import render
-#from django.http import HttpResponse
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
-#from keras.models import Sequential
-#from keras.layers import LSTM, Dense
-from keras.layers import Input
 import mpld3
 from mpld3 import plugins
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from keras.models import load_model
 import datetime
 import matplotlib.dates as mdates
 import csv
+from datetime import datetime as dt_time
+import plotly.graph_objects as go
+
 
 
 
@@ -122,7 +119,6 @@ def Dashboard(request):
         # Plot past water level
         past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Past Water Level', linewidth=3)
 
-        
         forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
     
         ax.spines['top'].set_color('white')
@@ -133,8 +129,8 @@ def Dashboard(request):
         ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
         ax.set_ylabel('WATER LEVEL', fontsize=15, color="white", labelpad=7)
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        ax.yaxis.set_tick_params(labelcolor='black', labelsize=10)
-        ax.xaxis.set_tick_params(rotation=85, labelcolor='black', labelsize=10)
+        ax.yaxis.set_tick_params(labelcolor='white', labelsize=10)  # Change to white
+        ax.xaxis.set_tick_params(rotation=85, labelcolor='white', labelsize=10)
         ax.grid(axis='both', linestyle='--', alpha=0.2)
         ax.legend(loc='lower right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
         tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(original['Water Level'].values), voffset=20, hoffset=10)
@@ -145,11 +141,8 @@ def Dashboard(request):
 
 
         plt.tight_layout()
-
-        # Convert plot to HTML using mpld3
         html_str = mpld3.fig_to_html(fig)
-
-        plt.close()  # Close the plot to free up memory
+        plt.close() 
 
         return html_str
 
@@ -184,29 +177,83 @@ def Dashboard(request):
     min_water_level_date = min_year_timestamp.strftime("%B %d, %Y")
 
     def water_alloc():
-        plt.cla()
         data = pd.read_csv('manila_water_data.csv')
         data['Date'] = pd.to_datetime(data['Date'], format='%d-%b-%y')
-        data = data.tail(6)
-        y = data['Business Zone']
-        x = data['Supply Volume']
-        plt.figure(figsize=(15, 6))
-        bars = plt.barh(y, x, color='skyblue', edgecolor='black', linewidth=0.5)
+        filtered_data = data.tail(6)
+        filtered_data.set_index('Business Zone', inplace=True)
+        filtered_data.sort_index(inplace=True)
+        filtered_data['nrwv'] = filtered_data['Supply Volume'] - filtered_data['Bill Volume']
+        y = list(range(len(filtered_data)))
+        fig = go.Figure(data=[
+            go.Bar(y=y, x=filtered_data['Supply Volume'], orientation='h', name="Supply Volume", base=0),
+            go.Bar(y=y, x=-filtered_data['nrwv'], orientation='h', name="NRWV", base=0)
+        ])
+        fig.update_layout(
+            barmode='stack',
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(
+                family="Arial, sans-serif",
+                size=14, 
+                color="white"  
+            ),
+            title=dict(
+                text='Water Supply and NRWV',
+                font=dict(
+                    size=20,  
+                    color="white"
+                    ),
+                x=0.5,
+                xanchor= 'center'
+            ),
+            xaxis=dict(
+                title=dict(
+                    text='Supply Volume',
+                    font=dict(
+                        size=16,  
+                        color="white"  
+                    )
+                ),
+                tickfont=dict(
+                    size=12,  
+                    color="white"  
+                )
+            ),
+            yaxis=dict(
+                title=dict(
+                    text='Business Zone',
+                    font=dict(
+                        size=16,  
+                        color="white" 
+                    )
+                ),
+                tickfont=dict(
+                    size=12,  
+                    color="white"  
+                )
+            )
+        )
+        fig.update_yaxes(ticktext=filtered_data.index,tickvals=y)
 
-        for bar, val in zip(bars, x):
-            plt.text(bar.get_width() - 0.2, bar.get_y() + bar.get_height()/2, str(val), color='black', va='center', ha='right')
-
-        plt.xlabel('Supply Volume', color='white')
-        plt.ylabel('Business Zones', color='white')
-
-        plt.xticks(size='large', color='white')
-        plt.yticks(size='large', color='white')
-        plt.savefig('decision_support/static/img/water_alloc.png', transparent=True)
-    water_alloc()
+        html_str = fig.to_html()
+        return html_str
+    
+    water_alloc_plot = water_alloc()
 
     date_today = df_forecast.index[13]
     date_yest = df_forecast.index[14]
     date_tom = df_forecast.index[15]
+    alloc_data = pd.read_csv('manila_water_data.csv')
+    alloc_data['Date'] = pd.to_datetime(alloc_data['Date'], format='%d-%b-%y')
+    last_date = alloc_data['Date'].iloc[-1]
+    alloc_date_format = pd.to_datetime(last_date, format='%d-%b-%y')
+    get_month = alloc_date_format.month
+    get_year = alloc_date_format.year
+    day = 1
+    datetime_obj = dt_time(year=get_year,month=get_month, day=day)
+    display_year = datetime_obj.strftime("%Y")
+    display_month = datetime_obj.strftime("%B")
+    last_alloc_date = f"{display_month} {display_year}"
     return render(request, 'Dashboard.html', 
                   {'Tomorrow': forecasted_tom, 
                    'Today': last_known_value, 
@@ -219,7 +266,9 @@ def Dashboard(request):
                    'date_today': date_today,
                    'date_yest': date_yest,
                    'date_tom': date_tom,
-                   'plot': plot})
+                   'plot': plot,
+                   'last_alloc_date': last_alloc_date,
+                   'water_alloc_plot': water_alloc_plot})
 
 
 
@@ -227,32 +276,50 @@ def Dashboard(request):
 def Forecast(request):
     def water_level_plot():
         plt.cla()
-        title = 'Forecasted Water Level'
-        plt.figure(figsize=(20, 10))
-        plt.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=8, label='Past Water Level', linewidth=3)
-        plt.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=8, linewidth=3)
+        # Plotting
+        fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
-        # Connect past data to forecasted data
-        #plt.plot([last_known_date, forecast_dates[0]], [last_known_value, forecast_values.iloc[0]], color='green', linestyle='--')
-        plt.xlabel('DATE', fontsize=20, color="white", labelpad=30)  
-        plt.ylabel('WATER LEVEL', fontsize=20, color="white", labelpad=30) 
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        plt.yticks(color='white',fontsize=20)
-        plt.xticks(rotation=85, color='white', fontsize=20)
-        plt.grid(axis='x', linestyle='--', alpha=0.2)
-        plt.grid(axis='y', linestyle='--', alpha=0.2)
-        plt.legend(loc='upper right', fontsize='xx-large', ncol=1, borderpad=1.0, borderaxespad=1.0, shadow=True)      
-        plt.gca().spines['top'].set_color('black')  
-        plt.gca().spines['right'].set_color('black')  
-        plt.gca().spines['bottom'].set_color('black')  
-        plt.gca().spines['left'].set_color('black')  
-        plt.tight_layout() 
-        plt.savefig('decision_support/static/img/water_level_plot.png', transparent=True)
+        # Plot past water level
+        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Past Water Level', linewidth=3)
+        
+        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
+    
+        ax.spines['top'].set_color('white')
+        ax.spines['right'].set_color('white')
+        ax.spines['bottom'].set_color('white')
+        ax.spines['left'].set_color('white')
+        
+        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
+        ax.set_ylabel('WATER LEVEL', fontsize=15, color="white", labelpad=7)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+        ax.yaxis.set_tick_params(labelcolor='red', labelsize=10)
+        ax.xaxis.set_tick_params(rotation=85, labelcolor='red', labelsize=10)
+        ax.grid(axis='both', linestyle='--', alpha=0.2)
+        ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
+        tooltip_css = """
+        .mpld3-tooltip {
+            color: White;  
+        }
+        """
+        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
+        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Water Level'])]
+
+        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
+        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+
+        plugins.connect(fig, tooltip1)
+        plugins.connect(fig, tooltip2)
+        plt.tight_layout()
+        html_str = mpld3.fig_to_html(fig)
+        plt.close() 
+
+        return html_str
+    
     forecasted_date = df_forecast.index[14]
     forecasted = df_forecast['Water Level'].iloc[14]
     forecasted = round(forecasted, 2)
 
-    # water_level_plot()
+    water_plot = water_level_plot()
     # PREDICTION
     train_predictions = model_water.predict(X_train)
     test_predictions = model_water.predict(X_test)
@@ -288,7 +355,7 @@ def Forecast(request):
 
 
 
-    def rainfall_plot(fore_rain_smape, act_rain_smape, forecast_rain, actual_rain):
+    def rainfall_plot():
         model_rainfall = load_model('Model_rainfall.h5')
         first_data = pd.read_csv('rainfall_data.csv')
         first_data['RAINFALL'] = pd.to_numeric(first_data['RAINFALL'], errors='coerce')
@@ -353,27 +420,42 @@ def Forecast(request):
         last_known_value = original['RAINFALL'].iloc[-1]
 
         plt.cla()
-        title = 'Forecasted Rainfall'
-        plt.figure(figsize=(20, 10))
-        plt.plot(original.index, original['RAINFALL'], color='#7CFC00', marker='o', markersize=8, label='Past Rainfall', linewidth=3)
-        plt.plot(forecast_values.index, forecast_values, label='Forecasted Rainfall', color='orange', marker='o', markersize=8, linewidth=3)
+        # Plotting
+        fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
-        # Connect past data to forecasted data
-        #plt.plot([last_known_date, forecast_dates[0]], [last_known_value, forecast_values.iloc[0]], color='green', linestyle='--')
-        plt.xlabel('DATE', fontsize=20, color="white", labelpad=30)  
-        plt.ylabel('RAINFALL', fontsize=20, color="white", labelpad=30) 
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        plt.yticks(color='white',fontsize=20)
-        plt.xticks(rotation=85, color='white', fontsize=20)
-        plt.grid(axis='x', linestyle='--', alpha=0.2)
-        plt.grid(axis='y', linestyle='--', alpha=0.2)
-        plt.legend(loc='upper right', fontsize='xx-large', ncol=1, borderpad=1.0, borderaxespad=1.0, shadow=True)      
-        plt.gca().spines['top'].set_color('black')  
-        plt.gca().spines['right'].set_color('black')  
-        plt.gca().spines['bottom'].set_color('black')  
-        plt.gca().spines['left'].set_color('black')  
-        plt.tight_layout() 
-        plt.savefig('decision_support/static/img/rainfall_plot.png', transparent=True)
+        # Plot past water level
+        past_plot = ax.plot(original.index, original['RAINFALL'], color='#7CFC00', marker='o', markersize=7, label='Actual Rainfall', linewidth=3)
+        
+        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Rainfall', color='orange', marker='o', markersize=7, linewidth=3)
+    
+        ax.spines['top'].set_color('white')
+        ax.spines['right'].set_color('white')
+        ax.spines['bottom'].set_color('white')
+        ax.spines['left'].set_color('white')
+        
+        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
+        ax.set_ylabel('RAINFALL', fontsize=15, color="white", labelpad=7)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+        ax.yaxis.set_tick_params(labelcolor='red', labelsize=10)
+        ax.xaxis.set_tick_params(rotation=85, labelcolor='red', labelsize=10)
+        ax.grid(axis='both', linestyle='--', alpha=0.2)
+        ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
+        tooltip_css = """
+        .mpld3-tooltip {
+            color: White;  
+        }
+        """
+        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
+        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['RAINFALL'])]
+
+        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
+        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+
+        plugins.connect(fig, tooltip1)
+        plugins.connect(fig, tooltip2)
+        plt.tight_layout()
+        html_str = mpld3.fig_to_html(fig)
+        plt.close() 
 
         # PREDICTION
         train_predictions = model_rainfall.predict(X_train)
@@ -419,15 +501,15 @@ def Forecast(request):
         actual_rain = original['RAINFALL'].iloc[-1]
         
 
-        return fore_rain_smape, act_rain_smape, forecast_rain, actual_rain
+        return fore_rain_smape, act_rain_smape, forecast_rain, actual_rain, html_str
 
     forecast_rain = 0
     actual_rain = 0
     fore_rain_smape = 0.00
     act_rain_smape = 0.00
-    # fore_rain_smape, act_rain_smape, forecast_rain, actual_rain = rainfall_plot(fore_rain_smape, act_rain_smape, forecast_rain, actual_rain)
+    fore_rain_smape, act_rain_smape, forecast_rain, actual_rain, rain_plot = rainfall_plot()
 
-    def drawdown_plot(fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown):
+    def drawdown_plot():
         model_drawdown = load_model('Model_drawdown.h5')
         first_data = pd.read_csv('water_data.csv')
         columns = ['Date', 'Drawdown', 'Rainfall', 'Water Level'] 
@@ -495,27 +577,42 @@ def Forecast(request):
         last_known_value = original['Drawdown'].iloc[-1]
 
         plt.cla()
-        title = 'Forecasted Drawdown'
-        plt.figure(figsize=(20, 10))
-        plt.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=8, label='Past Drawdown', linewidth=3)
-        plt.plot(forecast_values.index, forecast_values, label='Forecasted Drawdown', color='orange', marker='o', markersize=8, linewidth=3)
+        # Plotting
+        fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
-        # Connect past data to forecasted data
-        # plt.plot([last_known_date, forecast_dates[0]], [last_known_value, forecast_values.iloc[0]], color='green', linestyle='--')
-        plt.xlabel('DATE', fontsize=20, color="white", labelpad=30)  
-        plt.ylabel('Drawdown', fontsize=20, color="white", labelpad=30) 
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        plt.yticks(color='white',fontsize=20)
-        plt.xticks(rotation=85, color='white', fontsize=20)
-        plt.grid(axis='x', linestyle='--', alpha=0.2)
-        plt.grid(axis='y', linestyle='--', alpha=0.2)
-        plt.legend(loc='upper right', fontsize='xx-large', ncol=1, borderpad=1.0, borderaxespad=1.0, shadow=True)      
-        plt.gca().spines['top'].set_color('black')  
-        plt.gca().spines['right'].set_color('black')  
-        plt.gca().spines['bottom'].set_color('black')  
-        plt.gca().spines['left'].set_color('black')  
-        plt.tight_layout() 
-        plt.savefig('decision_support/static/img/drawdown_plot.png', transparent=True)
+        # Plot past water level
+        past_plot = ax.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=7, label='Actual Rainfall', linewidth=3)
+        
+        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Rainfall', color='orange', marker='o', markersize=7, linewidth=3)
+    
+        ax.spines['top'].set_color('white')
+        ax.spines['right'].set_color('white')
+        ax.spines['bottom'].set_color('white')
+        ax.spines['left'].set_color('white')
+        
+        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
+        ax.set_ylabel('Drawdown', fontsize=15, color="white", labelpad=7)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+        ax.yaxis.set_tick_params(labelcolor='red', labelsize=10)
+        ax.xaxis.set_tick_params(rotation=85, labelcolor='red', labelsize=10)
+        ax.grid(axis='both', linestyle='--', alpha=0.2)
+        ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
+        tooltip_css = """
+        .mpld3-tooltip {
+            color: White;  
+        }
+        """
+        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
+        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Drawdown'])]
+
+        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
+        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+
+        plugins.connect(fig, tooltip1)
+        plugins.connect(fig, tooltip2)
+        plt.tight_layout()
+        html_str = mpld3.fig_to_html(fig)
+        plt.close() 
 
          # PREDICTION
         train_predictions = model_drawdown.predict(X_train)
@@ -540,13 +637,13 @@ def Forecast(request):
         #act_drawdown_smape = 200 - act_drawdown_smape
         act_drawdown_smape = round(act_drawdown_smape,2)
         forecast_drawdown = df_forecast['Drawdown'].iloc[4]
-        return fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown
+        return fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, html_str
     
     forecast_drawdown = 0
     actual_drawdown = 0
     fore_drawdown_smape = 0.00
     act_drawdown_smape = 0.00
-    # fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown = drawdown_plot(fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown)
+    fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, drawdown_interact_plot = drawdown_plot()
 
 
 
@@ -564,11 +661,12 @@ def Forecast(request):
                    'actual_rain': actual_rain,
                    'forecast_rain': forecast_rain,
                    'fore_rain_smape': fore_rain_smape,
-                   'act_rain_smape': act_rain_smape})
+                   'act_rain_smape': act_rain_smape,
+                   'water_plot': water_plot,
+                   'rain_plot': rain_plot,
+                   'drawdown_interact_plot': drawdown_interact_plot})
 
 def Business_zone (request):
-    import datetime
-    from datetime import datetime as dt_time
     data = pd.read_csv('manila_water_data.csv')
     data['Date'] = pd.to_datetime(data['Date'], format='%d-%b-%y')
     last_date = data['Date'].iloc[-1]
