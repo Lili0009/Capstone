@@ -96,7 +96,7 @@
 		color: White;
 	} </style>
         <div>
-          <button class="btn btn-primary-forecast" id="forecast_all-btn">Forecast All</button>
+          <button onclick="location.href='{% url 'forecast' %}?forecast_all=true'" class="btn btn-primary-forecast" id="forecast_all-btn">Forecast All</button>
         </div>
       </div></header>
     <section class="u-clearfix u-custom-color-1 u-section-1" id="sec-5a07">
@@ -131,7 +131,7 @@
 		color: White;
 	} </style>
               <div>
-                <button class="btn btn-primary-forecast" id="forecast_waterlvl-btn">Forecast</button>
+                <button onclick="location.href='{% url 'forecast' %}?forecast_waterlvl=true'" class="btn btn-primary-forecast" id="forecast_waterlvl-btn">Forecast</button>
               </div>
             </div>
             <a href="#sec-e004" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-btn-rectangle u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1">Evaluation Metric </a>
@@ -169,7 +169,7 @@
 		color: White;
 	} </style>
               <div>
-                <button class="btn btn-primary-forecast" id="forecast_rainfall-btn">Forecast</button>
+                <button onclick="location.href='{% url 'forecast' %}?forecast_rainfall=true'" class="btn btn-primary-forecast" id="forecast_rainfall-btn">Forecast</button>
               </div>
             </div>
             <a href="#sec-d91f" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
@@ -207,7 +207,7 @@
 		color: White;
 	} </style>
               <div>
-                <button class="btn btn-primary-forecast" id="forecast_drawdown-btn">Forecast</button>
+                <button onclick="location.href='{% url 'forecast' %}?forecast_drawdown=true'" class="btn btn-primary-forecast" id="forecast_drawdown-btn">Forecast</button>
               </div>
             </div>
             <a href="#sec-cb9f" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
@@ -280,7 +280,7 @@
         <div class="u-container-layout u-container-layout-1">
           <h3 class="u-custom-font u-font-georgia u-text u-text-body-color u-text-1">EVALUATION METRIC</h3>
           <div class="u-custom-color-5 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-2">95.32 % </p>
+          <p class="u-custom-font u-text u-text-body-color u-text-2">{{ act_rain_smape }} % </p>
           <p class="u-text u-text-body-color u-text-3" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Accuracy</p>
           <p class="u-custom-font u-font-merriweather u-text u-text-body-color u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">RAINFALL <span style="font-size: 1.125rem;">(millimeter)</span>
           </p>
@@ -308,11 +308,11 @@
             </table>
           </div>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-default u-text-5">DATE</p>
-          <p class="u-text u-text-body-color u-text-6">01-Jan-24 </p>
+          <p class="u-text u-text-body-color u-text-6">{{ forecasted_date }} </p>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-7">FORECASTED</p>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-8">ACTUAL</p>
-          <p class="u-text u-text-body-color u-text-9">1.23</p>
-          <p class="u-text u-text-body-color u-text-10">2.34 </p>
+          <p class="u-text u-text-body-color u-text-9">{{forecast_rain}}</p>
+          <p class="u-text u-text-body-color u-text-10">{{actual_rain}} </p>
         </div><button class="u-dialog-close-button u-icon u-text-grey-15 u-icon-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 413.348 413.348"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-5801"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 413.348 413.348" id="svg-5801"><path d="m413.348 24.354-24.354-24.354-182.32 182.32-182.32-182.32-24.354 24.354 182.32 182.32-182.32 182.32 24.354 24.354 182.32-182.32 182.32 182.32 24.354-24.354-182.32-182.32z"></path></svg></button>
       </div>
     </section><style>.u-dialog-section-7 .u-dialog-1 {
@@ -603,7 +603,7 @@
         <div class="u-container-layout u-container-layout-1">
           <h3 class="u-custom-font u-font-georgia u-text u-text-black u-text-1">EVALUATION METRIC</h3>
           <div class="u-custom-color-5 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-2">95.32 % </p>
+          <p class="u-custom-font u-text u-text-body-color u-text-2">{{ act_smape }} % </p>
           <p class="u-text u-text-body-color u-text-3" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Accuracy</p>
           <p class="u-custom-font u-font-merriweather u-text u-text-body-color u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">WATER LEVEL <span style="font-size: 1.125rem;">(meter)</span>
           </p>
@@ -631,11 +631,11 @@
             </table>
           </div>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-5">DATE</p>
-          <p class="u-text u-text-body-color u-text-6">01-Jan-24 </p>
+          <p class="u-text u-text-body-color u-text-6">{{ forecasted_date }} </p>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-7">FORECASTED</p>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-8">ACTUAL</p>
-          <p class="u-text u-text-body-color u-text-9">74.23</p>
-          <p class="u-text u-text-body-color u-text-10">74.40</p>
+          <p class="u-text u-text-body-color u-text-9">{{ forecasted }}</p>
+          <p class="u-text u-text-body-color u-text-10">{{ actual }}</p>
         </div><button class="u-dialog-close-button u-icon u-text-grey-15 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 329.26933 329"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-ea5c"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 329.26933 329" id="svg-ea5c"><path d="m194.800781 164.769531 128.210938-128.214843c8.34375-8.339844 8.34375-21.824219 0-30.164063-8.339844-8.339844-21.824219-8.339844-30.164063 0l-128.214844 128.214844-128.210937-128.214844c-8.34375-8.339844-21.824219-8.339844-30.164063 0-8.34375 8.339844-8.34375 21.824219 0 30.164063l128.210938 128.214843-128.210938 128.214844c-8.34375 8.339844-8.34375 21.824219 0 30.164063 4.15625 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921875-2.089844 15.082031-6.25l128.210937-128.214844 128.214844 128.214844c4.160156 4.160156 9.621094 6.25 15.082032 6.25 5.460937 0 10.921874-2.089844 15.082031-6.25 8.34375-8.339844 8.34375-21.824219 0-30.164063zm0 0"></path></svg></button>
       </div>
     </section><style>.u-dialog-section-8 .u-dialog-1 {
@@ -940,7 +940,7 @@
         <div class="u-container-layout u-container-layout-1">
           <h3 class="u-custom-font u-font-georgia u-text u-text-body-color u-text-1">EVALUATION METRIC</h3>
           <div class="u-custom-color-5 u-preserve-proportions u-shape u-shape-circle u-shape-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-          <p class="u-custom-font u-text u-text-body-color u-text-2">95.32 % </p>
+          <p class="u-custom-font u-text u-text-body-color u-text-2">{{act_drawdown_smape}} % </p>
           <p class="u-text u-text-body-color u-text-3" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Accuracy</p>
           <p class="u-custom-font u-font-merriweather u-text u-text-body-color u-text-default u-text-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">DRAWDOWN <span style="font-size: 1.125rem;"> ( cubic meter ) </span>
           </p>
@@ -971,8 +971,8 @@
           <p class="u-text u-text-body-color u-text-6">01-Jan-24 </p>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-7">FORECASTED</p>
           <p class="u-custom-font u-heading-font u-text u-text-body-color u-text-8">ACTUAL</p>
-          <p class="u-text u-text-body-color u-text-9">-264000</p>
-          <p class="u-text u-text-body-color u-text-10">132000</p>
+          <p class="u-text u-text-body-color u-text-9">{{forecast_drawdown}}</p>
+          <p class="u-text u-text-body-color u-text-10">{{actual_drawdown}}</p>
         </div><button class="u-dialog-close-button u-icon u-text-grey-15 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-efe9"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-efe9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
       </div>
     </section><style>.u-dialog-section-11 .u-dialog-1 {

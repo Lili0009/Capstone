@@ -18,75 +18,77 @@ import plotly.graph_objects as go
 
 
 
+def waterlvl_prediction():
+    global forecast_values, original, data, df_forecast, forecast_values, last_known_value, forecast_dates
+    global model_water, scaler, X_train, X_test, y_train, y_test
 
-model_water = load_model('Model_water.h5')
+    model_water = load_model('Model_water.h5')
 
-first_data = pd.read_csv('water_data.csv')
-first_data['Rainfall'] = pd.to_numeric(first_data['Rainfall'], errors='coerce')
+    first_data = pd.read_csv('water_data.csv')
+    first_data['Rainfall'] = pd.to_numeric(first_data['Rainfall'], errors='coerce')
 
-# Split data into training and testing sets
-train_size = int(len(first_data) * 0.8)
-train_data = first_data.iloc[:train_size]
+    # training and testing sets
+    train_size = int(len(first_data) * 0.8)
+    train_data = first_data.iloc[:train_size]
 
-# Calculate means from training data
-water_mean = train_data['Water Level'].mean()
-drawdown_mean = train_data['Drawdown'].mean()
+    # mean from training data
+    water_mean = train_data['Water Level'].mean()
+    drawdown_mean = train_data['Drawdown'].mean()
 
-# Fill missing values with means
-data = first_data.fillna(value={'Water Level': water_mean, 'Rainfall': 0, 'Drawdown': drawdown_mean}).copy()
+    # Fill missing values with means
+    data = first_data.fillna(value={'Water Level': water_mean, 'Rainfall': 0, 'Drawdown': drawdown_mean}).copy()
 
-# Convert 'Date' column to datetime and set as index
-data['Date'] = pd.to_datetime(data['Date'], format='%d-%b-%y')
-data.set_index('Date', inplace=True)
+    # Convert 'Date' column to datetime and set as index
+    data['Date'] = pd.to_datetime(data['Date'], format='%d-%b-%y')
+    data.set_index('Date', inplace=True)
 
-# Scale the data using MinMaxScaler
-scaler = MinMaxScaler(feature_range=(0, 1))
-scaled_data = scaler.fit_transform(data)
+    # Scale the data using MinMaxScaler
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_data = scaler.fit_transform(data)
 
-def create_sequences(data, seq_length):
-    X = []
-    y = []
-    for i in range(len(data) - seq_length):
-        X.append(data[i:i+seq_length, :])
-        y.append(data[i+seq_length, 0])
-    return np.array(X), np.array(y)
+    def create_sequences(data, seq_length):
+        X = []
+        y = []
+        for i in range(len(data) - seq_length):
+            X.append(data[i:i+seq_length, :])
+            y.append(data[i+seq_length, 0])
+        return np.array(X), np.array(y)
 
-seq_length = 30
-X_train, y_train = create_sequences(scaled_data[:train_size], seq_length)
-X_test, y_test = create_sequences(scaled_data[train_size:], seq_length)
-
-
-
-train_dates = list(data.index)
-n_past = 15
-n_days_for_prediction= 480
-predict_period_dates = pd.date_range(list(train_dates)[-n_past], periods=n_days_for_prediction, freq='d').tolist()   
-prediction = model_water.predict(X_test[-n_days_for_prediction:]) 
-prediction_copies = np.repeat(prediction, data.shape[1], axis=-1)
-y_pred_future = scaler.inverse_transform(prediction_copies)[:, 0]
-forecast_dates = []
-for time_i in predict_period_dates:
-    forecast_dates.append(time_i.date())
-
-df_forecast = pd.DataFrame({'Date':np.array(forecast_dates), 'Water Level':y_pred_future})
-
-df_forecast.set_index('Date', inplace=True)
+    seq_length = 30
+    X_train, y_train = create_sequences(scaled_data[:train_size], seq_length)
+    X_test, y_test = create_sequences(scaled_data[train_size:], seq_length)
 
 
-# past data
-original = data[['Water Level']]
-original = original.loc[(original.index >= original.index[-7]) & (original.index <= original.index[-1])]
 
-# forecasted data plot
-last_known_date = original.index[-1]
-start_date = last_known_date + pd.Timedelta(days=-6)
-forecast_end_date = start_date + pd.Timedelta(days=30)
-forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
-forecast_values = df_forecast.loc[forecast_dates, 'Water Level']
+    train_dates = list(data.index)
+    n_past = 15
+    n_days_for_prediction= 480
+    predict_period_dates = pd.date_range(list(train_dates)[-n_past], periods=n_days_for_prediction, freq='d').tolist()   
+    prediction = model_water.predict(X_test[-n_days_for_prediction:]) 
+    prediction_copies = np.repeat(prediction, data.shape[1], axis=-1)
+    y_pred_future = scaler.inverse_transform(prediction_copies)[:, 0]
+    forecast_dates = []
+    for time_i in predict_period_dates:
+        forecast_dates.append(time_i.date())
 
-# Connecting the plot from the last data in csv to the forecasted water level
-last_known_value = original['Water Level'].iloc[-1]
+    df_forecast = pd.DataFrame({'Date':np.array(forecast_dates), 'Water Level':y_pred_future})
 
+    df_forecast.set_index('Date', inplace=True)
+
+
+    # past data
+    original = data[['Water Level']]
+    original = original.loc[(original.index >= original.index[-7]) & (original.index <= original.index[-1])]
+
+    # forecasted data plot
+    last_known_date = original.index[-1]
+    start_date = last_known_date + pd.Timedelta(days=-6)
+    forecast_end_date = start_date + pd.Timedelta(days=30)
+    forecast_dates = pd.date_range(start=start_date, end=forecast_end_date) 
+    forecast_values = df_forecast.loc[forecast_dates, 'Water Level']
+    last_known_value = original['Water Level'].iloc[-1]
+
+waterlvl_prediction()
 now = datetime.datetime.now()
 dateToday = now.strftime("%A %d %B, %Y  %I:%M%p")
 
@@ -103,6 +105,7 @@ def Dashboard(request):
 
 
     def water_level_dashboard():
+
         # past data
         original = data[['Water Level']]
         original = original.loc[(original.index >= original.index[-7]) & (original.index <= original.index[-1])]
@@ -117,7 +120,7 @@ def Dashboard(request):
         fig, ax = plt.subplots(figsize=(5.5, 4.4))
 
         # Plot past water level
-        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Past Water Level', linewidth=3)
+        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Actual Water Level', linewidth=3)
 
         forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
     
@@ -133,8 +136,21 @@ def Dashboard(request):
         ax.xaxis.set_tick_params(rotation=85, labelcolor='white', labelsize=10)
         ax.grid(axis='both', linestyle='--', alpha=0.2)
         ax.legend(loc='lower right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
-        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(original['Water Level'].values), voffset=20, hoffset=10)
-        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(forecast_values.values), voffset=20, hoffset=10)
+        tooltip_css = """
+        .mpld3-tooltip {
+            color: White; 
+            background-color: rgba(0, 0, 0, 0.7);
+            font-size: 15px; 
+            font-family: Helvetica;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        """
+        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
+        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Water Level'])]
+
+        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
+        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
 
         plugins.connect(fig, tooltip1)
         plugins.connect(fig, tooltip2)
@@ -275,12 +291,15 @@ def Dashboard(request):
 
 def Forecast(request):
     def water_level_plot():
+        waterlvl_prediction()
+        now = datetime.datetime.now()
+        #dateToday = now.strftime("%A %d %B, %Y  %I:%M%p")
         plt.cla()
         # Plotting
         fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
         # Plot past water level
-        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Past Water Level', linewidth=3)
+        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Actual Water Level', linewidth=3)
         
         forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
     
@@ -298,7 +317,12 @@ def Forecast(request):
         ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
         tooltip_css = """
         .mpld3-tooltip {
-            color: White;  
+            color: White; 
+            background-color: rgba(0, 0, 0, 0.7);
+            font-size: 15px; 
+            font-family: Helvetica;
+            padding: 5px;
+            border-radius: 3px;
         }
         """
         formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
@@ -311,6 +335,8 @@ def Forecast(request):
         plugins.connect(fig, tooltip2)
         plt.tight_layout()
         html_str = mpld3.fig_to_html(fig)
+        with open('waterlvl_plot.html', 'w') as f:
+            f.write(html_str)
         plt.close() 
 
         return html_str
@@ -345,6 +371,7 @@ def Forecast(request):
     actual_error = abs(original['Water Level'].iloc[-1] - df_forecast['Water Level'].iloc[14])
     act_percentage_error = actual_error / (abs(original['Water Level'].iloc[-1]) + abs(df_forecast['Water Level'].iloc[14]))
     act_smape = 100 * np.mean(act_percentage_error)
+    act_smape = 100 - act_smape
     act_smape = round(act_smape,2)
 
 
@@ -414,10 +441,10 @@ def Forecast(request):
         start_date = last_known_date + pd.Timedelta(days=-6)
         forecast_end_date = start_date + pd.Timedelta(days=30)
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
-        forecast_values = df_forecast.loc[forecast_dates, 'RAINFALL']
+        forecast_values_rain = df_forecast.loc[forecast_dates, 'RAINFALL']
 
         # Connect the past data to the forecasted data
-        last_known_value = original['RAINFALL'].iloc[-1]
+        #last_known_value = original['RAINFALL'].iloc[-1]
 
         plt.cla()
         # Plotting
@@ -426,7 +453,7 @@ def Forecast(request):
         # Plot past water level
         past_plot = ax.plot(original.index, original['RAINFALL'], color='#7CFC00', marker='o', markersize=7, label='Actual Rainfall', linewidth=3)
         
-        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Rainfall', color='orange', marker='o', markersize=7, linewidth=3)
+        forecast_plot = ax.plot(forecast_values_rain.index, forecast_values_rain, label='Forecasted Rainfall', color='orange', marker='o', markersize=7, linewidth=3)
     
         ax.spines['top'].set_color('white')
         ax.spines['right'].set_color('white')
@@ -442,10 +469,15 @@ def Forecast(request):
         ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
         tooltip_css = """
         .mpld3-tooltip {
-            color: White;  
+            color: White; 
+            background-color: rgba(0, 0, 0, 0.7);
+            font-size: 15px; 
+            font-family: Helvetica;
+            padding: 5px;
+            border-radius: 3px;
         }
         """
-        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
+        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values_rain)]
         formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['RAINFALL'])]
 
         tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
@@ -455,6 +487,8 @@ def Forecast(request):
         plugins.connect(fig, tooltip2)
         plt.tight_layout()
         html_str = mpld3.fig_to_html(fig)
+        with open('rainfall_plot.html', 'w') as f:
+            f.write(html_str)
         plt.close() 
 
         # PREDICTION
@@ -484,7 +518,7 @@ def Forecast(request):
         actual_rain_error = abs(original['RAINFALL'].iloc[-1] - df_forecast['RAINFALL'].iloc[9])
         act_percentage_rain_error = actual_rain_error / (abs(original['RAINFALL'].iloc[-1]) + abs(df_forecast['RAINFALL'].iloc[9]))
         act_rain_smape = 100 * np.mean(act_percentage_rain_error)
-        #act_rain_smape = 100 - act_rain_smape
+        act_rain_smape = 100 - act_rain_smape
         act_rain_smape = round(act_rain_smape,2)
 
         #fore_rain_smape = np.mean((np.abs(test_predictions - y_test_inv) / np.abs(test_predictions + y_test_inv))) * 100
@@ -507,7 +541,7 @@ def Forecast(request):
     actual_rain = 0
     fore_rain_smape = 0.00
     act_rain_smape = 0.00
-    fore_rain_smape, act_rain_smape, forecast_rain, actual_rain, rain_plot = rainfall_plot()
+
 
     def drawdown_plot():
         model_drawdown = load_model('Model_drawdown.h5')
@@ -571,19 +605,18 @@ def Forecast(request):
         start_date = last_known_date + pd.Timedelta(days=-6)
         forecast_end_date = start_date + pd.Timedelta(days=30)
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
-        forecast_values = df_forecast.loc[forecast_dates, 'Drawdown']
+        forecast_values_drawdwn = df_forecast.loc[forecast_dates, 'Drawdown']
 
         # Connect the past data to the forecasted data
-        last_known_value = original['Drawdown'].iloc[-1]
+        #last_known_value = original['Drawdown'].iloc[-1]
 
         plt.cla()
         # Plotting
         fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
-        # Plot past water level
-        past_plot = ax.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=7, label='Actual Rainfall', linewidth=3)
+        past_plot = ax.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=7, label='Actual Drawdown', linewidth=3)
         
-        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Rainfall', color='orange', marker='o', markersize=7, linewidth=3)
+        forecast_plot = ax.plot(forecast_values_drawdwn.index, forecast_values_drawdwn, label='Forecasted Drawdown', color='orange', marker='o', markersize=7, linewidth=3)
     
         ax.spines['top'].set_color('white')
         ax.spines['right'].set_color('white')
@@ -599,10 +632,15 @@ def Forecast(request):
         ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
         tooltip_css = """
         .mpld3-tooltip {
-            color: White;  
+            color: White; 
+            background-color: rgba(0, 0, 0, 0.7);
+            font-size: 15px; 
+            font-family: Helvetica;
+            padding: 5px;
+            border-radius: 3px;
         }
         """
-        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
+        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values_drawdwn)]
         formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Drawdown'])]
 
         tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
@@ -612,6 +650,8 @@ def Forecast(request):
         plugins.connect(fig, tooltip2)
         plt.tight_layout()
         html_str = mpld3.fig_to_html(fig)
+        with open('drawdown_plot.html', 'w') as f:
+            f.write(html_str)
         plt.close() 
 
          # PREDICTION
@@ -634,7 +674,7 @@ def Forecast(request):
 
         # sMAPE of actual data to forecasted data
         act_drawdown_smape = np.mean((np.abs(df_forecast['Drawdown'].iloc[4] - original['Drawdown'].iloc[-1]) / np.abs(df_forecast['Drawdown'].iloc[4] + original['Drawdown'].iloc[-1])/2)) * 100
-        #act_drawdown_smape = 200 - act_drawdown_smape
+        act_drawdown_smape = 100 - act_drawdown_smape
         act_drawdown_smape = round(act_drawdown_smape,2)
         forecast_drawdown = df_forecast['Drawdown'].iloc[4]
         return fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, html_str
@@ -643,7 +683,43 @@ def Forecast(request):
     actual_drawdown = 0
     fore_drawdown_smape = 0.00
     act_drawdown_smape = 0.00
-    fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, drawdown_interact_plot = drawdown_plot()
+
+    
+
+    forecast_all = request.GET.get('forecast_all', None)
+    forecast_waterlvl = request.GET.get('forecast_waterlvl', None)
+    forecast_rainfall = request.GET.get('forecast_rainfall', None)
+    forecast_drawdwn = request.GET.get('forecast_drawdown', None)
+    if forecast_all:
+        water_plot = water_level_plot()
+        fore_rain_smape, act_rain_smape, forecast_rain, actual_rain, rain_plot = rainfall_plot()
+        fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, drawdown_interact_plot = drawdown_plot()
+    elif forecast_waterlvl:
+        water_plot = water_level_plot()
+        with open('rainfall_plot.html', 'r') as f:
+            rain_plot = f.read()
+        with open('drawdown_plot.html', 'r') as f:
+            drawdown_interact_plot = f.read()
+    elif forecast_rainfall:
+        fore_rain_smape, act_rain_smape, forecast_rain, actual_rain, rain_plot = rainfall_plot()
+        with open('drawdown_plot.html', 'r') as f:
+            drawdown_interact_plot = f.read()
+    elif forecast_drawdwn:
+        fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, drawdown_interact_plot = drawdown_plot()
+        with open('rainfall_plot.html', 'r') as f:
+            rain_plot = f.read()
+    else:
+        with open('waterlvl_plot.html', 'r') as f:
+            water_plot = f.read()
+        with open('rainfall_plot.html', 'r') as f:
+            rain_plot = f.read()
+        with open('drawdown_plot.html', 'r') as f:
+            drawdown_interact_plot = f.read()
+    
+    
+                
+
+  
 
 
 
