@@ -749,10 +749,12 @@ def Business_zone (request):
     alloc_date_format = pd.to_datetime(last_date, format='%d-%b-%y')
     get_month = alloc_date_format.month
     get_year = alloc_date_format.year
+    get_graph = 1
     day = 1
     if request.method == 'POST':
         get_month = int(request.POST['month']) 
         get_year = int(request.POST['year'])
+        get_graph = int(request.POST['graph'])
 
     datetime_obj = dt_time(year=get_year,month=get_month, day=day)
 
@@ -786,6 +788,8 @@ def Business_zone (request):
     total_supply = filtered_data['Supply Volume'].sum()
     total_nrwv = filtered_data['nrwv'].sum()
     nrwv_percentage = (total_nrwv / total_supply) * 100
+
+    
     return render(request, 'Business-Zones.html', 
                   {'Date': dateToday,
                    'total_supply':total_supply,
