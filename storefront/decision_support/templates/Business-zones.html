@@ -106,13 +106,13 @@
 	  background-color: #eee;
 	  color: black;
 		} </style>
-              <form action="/action_page.php">
+              <form action="{% url 'business_zone' %}" method="post">
                 <label for="graph">Graph:</label>
                 {% csrf_token %}
                 <select name="graph" id="graph" class="graph">
-                  <option value="01">Bar Chart</option>
-                  <option value="02">Line Chart</option>
-                  <option value="04">Pie Chart</option>
+                  <option value="1">Bar Chart</option>
+                  <option value="2">Line Chart</option>
+                  <option value="4">Pie Chart</option>
                 </select>
                 <label for="month">Month:</label>
                 <select name="month" id="month" class="month">
