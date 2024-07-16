@@ -15,6 +15,7 @@ import matplotlib.dates as mdates
 import csv
 from datetime import datetime as dt_time
 import plotly.graph_objects as go
+import plotly.io as pio
 
 
 
@@ -132,7 +133,7 @@ def Dashboard(request):
         ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
         ax.set_ylabel('WATER LEVEL', fontsize=15, color="white", labelpad=7)
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        ax.yaxis.set_tick_params(labelcolor='white', labelsize=10)  # Change to white
+        ax.yaxis.set_tick_params(labelcolor='white', labelsize=10)  
         ax.xaxis.set_tick_params(rotation=85, labelcolor='white', labelsize=10)
         ax.grid(axis='both', linestyle='--', alpha=0.2)
         ax.legend(loc='lower right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
@@ -353,8 +354,6 @@ def Forecast(request):
     train_predictions = scaler.inverse_transform(np.concatenate((train_predictions, X_train[:, -1, 1:]), axis=1))[:, 0]
     test_predictions = scaler.inverse_transform(np.concatenate((test_predictions, X_test[:, -1, 1:]), axis=1))[:, 0]
 
-    # SCALING FOR ACTUAL
-    y_train_inv = scaler.inverse_transform(np.concatenate((y_train.reshape(-1, 1), X_train[:, -1, 1:]), axis=1))[:, 0]
     y_test_inv = scaler.inverse_transform(np.concatenate((y_test.reshape(-1, 1), X_test[:, -1, 1:]), axis=1))[:, 0]
 
     # sMAPE of actual data to forecasted data
@@ -498,8 +497,6 @@ def Forecast(request):
         train_predictions = scaler.inverse_transform(np.concatenate((train_predictions, X_train[:, -1, 1:]), axis=1))[:, 0]
         test_predictions = scaler.inverse_transform(np.concatenate((test_predictions, X_test[:, -1, 1:]), axis=1))[:, 0]
 
-        # SCALING FOR ACTUAL
-        y_train_inv = scaler.inverse_transform(np.concatenate((y_train.reshape(-1, 1), X_train[:, -1, 1:]), axis=1))[:, 0]
         y_test_inv = scaler.inverse_transform(np.concatenate((y_test.reshape(-1, 1), X_test[:, -1, 1:]), axis=1))[:, 0]
 
         # sMAPE of actual data to forecasted data
@@ -661,8 +658,6 @@ def Forecast(request):
         train_predictions = scaler.inverse_transform(np.concatenate((train_predictions, X_train[:, -1, 1:]), axis=1))[:, 0]
         test_predictions = scaler.inverse_transform(np.concatenate((test_predictions, X_test[:, -1, 1:]), axis=1))[:, 0]
 
-        # SCALING FOR ACTUAL
-        y_train_inv = scaler.inverse_transform(np.concatenate((y_train.reshape(-1, 1), X_train[:, -1, 1:]), axis=1))[:, 0]
         y_test_inv = scaler.inverse_transform(np.concatenate((y_test.reshape(-1, 1), X_test[:, -1, 1:]), axis=1))[:, 0]
 
         # sMAPE of actual data to forecasted data
@@ -761,6 +756,7 @@ def Business_zone (request):
     display_year = datetime_obj.strftime("%Y")
     display_month = datetime_obj.strftime("%B")
     display_date = f"{display_month} {display_year}"
+    month_date = display_date
 
     date_string = datetime_obj.strftime("%d-%b-%y")
 
@@ -769,21 +765,173 @@ def Business_zone (request):
     filtered_data.sort_index(inplace=True)
     index = filtered_data.index
     filtered_data['nrwv'] = filtered_data['Supply Volume'] - filtered_data['Bill Volume']
-    def water_alloc_plot():
-        df = pd.DataFrame(filtered_data, columns=['Supply Volume', 'nrwv'], index=index)
-        plt.style.use("dark_background")
-        ax = df.plot.bar(stacked=True, rot=0, figsize=(10, 7), color=('Blue', 'skyblue'))
-        for p in ax.patches:
-            width, height = p.get_width(), p.get_height()
-            x, y = p.get_xy() 
-            ax.text(x + width/2, y + height/2, f'{height:.2f}', ha='center', va='center', color='black', fontsize=11)
-            
-        plt.yticks(color='white', fontsize=13)
-        plt.xticks(color='white', fontsize=13)
-        plt.legend(loc='upper right', fontsize='smaller', ncol=1, borderpad=1.0, borderaxespad=1.0, shadow=True)
-        plt.tight_layout() 
-        plt.savefig('decision_support/static/img/bz_water_alloc(1).png', transparent=True)
-    water_alloc_plot()
+
+    def bar_chart():
+        fig = go.Figure()
+
+        config = {'displaylogo': False}
+        fig.add_trace(go.Bar(x=index, y=filtered_data['Supply Volume'], name='Supply Volume', marker_color='blue'))
+        fig.add_trace(go.Bar(x=index, y=filtered_data['nrwv'], name='NRWV', marker_color='skyblue'))
+
+        fig.update_layout(
+            title='BAR CHART',
+            xaxis_title='Business Zone',
+            yaxis_title='Volume',
+            barmode='stack',
+            plot_bgcolor='rgba(0,0,0,0)',  
+            paper_bgcolor='rgba(0,0,0,0)', 
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
+            width=1000,
+            height=600,
+            legend=dict(
+                orientation='h',
+                yanchor='bottom',
+                y=1.02,
+                xanchor='right',
+                x=1
+            ),
+            modebar_remove=['zoom', 'pan', 'lasso', 'pan2d','select2d','lasso2d','resetScale2d']
+        )
+        html_str = pio.to_html(fig, config=config)
+
+        with open('bar_chart.html', 'w', encoding='utf-8') as f:
+            f.write(html_str)
+
+        plt.close() 
+        return html_str
+
+
+        
+    def pie_chart():
+        colors = ("orange", "cyan", "brown", "grey", "indigo", "beige")
+
+        config = {'displaylogo': False}
+
+        def func(pct, allvalues):
+            absolute = int(pct / 100.*np.sum(allvalues))
+            return "{:.1f}%\n({:d} mld)".format(pct, absolute)
+
+        fig = go.Figure()
+
+        fig.add_trace(go.Pie(
+            labels=index,
+            values=filtered_data['nrwv'],
+            textinfo='label+percent',
+            textposition='inside',
+            marker=dict(colors=colors),
+            sort=False,
+            domain={'x': [0.55, 1], 'y': [0.05, 0.95]}, 
+            title='Non-Revenue Water Volume'
+        ))
+
+        fig.add_trace(go.Pie(
+            labels=index,
+            values=filtered_data['Supply Volume'],
+            textinfo='label+percent',
+            textposition='inside',
+            marker=dict(colors=colors),
+            sort=False,
+            domain={'x': [0, 0.45], 'y': [0.05, 0.95]},
+            title='Supply Volume'
+        ))
+
+        fig.update_layout(
+            title='PIE CHART',
+            showlegend=True,
+            plot_bgcolor='rgba(0,0,0,0)',  
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=0,
+                xanchor='center',
+                x=0.5
+            ),
+            width=950,
+            height=600,
+            margin=dict(t=50, b=10, l=10, r=10)
+        )
+        
+        html_str = pio.to_html(fig, config=config)
+
+        with open('pie_chart.html', 'w', encoding='utf-8') as f:
+            f.write(html_str)
+
+        plt.close() 
+        return html_str
+    
+    def line_chart():
+        araneta = data[data['Business Zone'] == 'Araneta-Libis']
+        elliptical = data[data['Business Zone'] == 'Elliptical']
+        sjuan = data[data['Business Zone'] == 'San Juan']
+        tandang_sora = data[data['Business Zone'] == 'Tandang Sora']
+        timog = data[data['Business Zone'] == 'Timog']
+        up_katipunan = data[data['Business Zone'] == 'Up-Katipunan']
+
+        fig = go.Figure()
+        config = {'displaylogo': False}
+        fig.add_trace(go.Scatter(x=araneta['Date'], y=araneta['Supply Volume'], mode='lines+markers', name='Araneta-Libis'))
+        fig.add_trace(go.Scatter(x=elliptical['Date'], y=elliptical['Supply Volume'], mode='lines+markers', name='Elliptical'))
+        fig.add_trace(go.Scatter(x=sjuan['Date'], y=sjuan['Supply Volume'], mode='lines+markers', name='San Juan'))
+        fig.add_trace(go.Scatter(x=tandang_sora['Date'], y=tandang_sora['Supply Volume'], mode='lines+markers', name='Tandang Sora'))
+        fig.add_trace(go.Scatter(x=timog['Date'], y=timog['Supply Volume'], mode='lines+markers', name='Timog'))
+        fig.add_trace(go.Scatter(x=up_katipunan['Date'], y=up_katipunan['Supply Volume'], mode='lines+markers', name='Up Katipunan'))
+
+        fig.update_layout(
+            title='LINE CHART',
+            xaxis_title='Date',
+            yaxis_title='Supply Volume',
+            plot_bgcolor='rgba(0,0,0,0)',  
+            paper_bgcolor='rgba(0,0,0,0)',
+            xaxis=dict(showgrid=True, gridcolor='rgba(200, 200, 200, 0.5)', gridwidth=1),
+            yaxis=dict(showgrid=True, gridcolor='rgba(200, 200, 200, 0.5)', gridwidth=1),
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=1.08,
+                xanchor='right',
+                x=1
+            ),
+            width = 980,
+            height = 600,
+            modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+        )
+        html_str = pio.to_html(fig, config=config)
+
+        with open('line_chart.html', 'w', encoding='utf-8') as f:
+            f.write(html_str)
+
+        plt.close() 
+        return html_str
+
+
+
+
+    if get_graph == 2:
+        chart = bar_chart()
+    elif get_graph == 3:
+        chart = pie_chart()
+    elif get_graph == 4:
+        chart = line_chart()
+        display_date = 'Monthly'
+    else:
+        with open('bar_chart.html', 'r', encoding='utf-8') as f:
+            chart = f.read()
+
 
     total_supply = filtered_data['Supply Volume'].sum()
     total_nrwv = filtered_data['nrwv'].sum()
@@ -795,5 +943,6 @@ def Business_zone (request):
                    'total_supply':total_supply,
                    'total_nrwv':total_nrwv,
                    'nrwv_percentage': nrwv_percentage,
-                   'display_date':display_date})
-    
+                   'display_date':display_date,
+                   'month_date':month_date,
+                   'chart': chart})

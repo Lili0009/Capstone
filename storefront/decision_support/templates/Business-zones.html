@@ -13,7 +13,28 @@
     <meta name="generator" content="Nicepage 6.6.3, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|ABeeZee:400,400i">
-  
+
+    {% load static %}
+    <script src="{% static 'mpld3.js' %}"></script>
+    <style>
+      rect.mpld3-axesbg {
+          fill: none !important; 
+      }
+      .plot-container {
+          margin: 0px 0px 0px 70px; 
+          padding: 1px;
+          top: 10px; 
+          left: 20px;
+          width: 550px;
+      }
+      .alloc-container {
+          margin: 1px; 
+          padding: 1px;
+          top: 70px; 
+          left: 20px;
+
+      }
+    </style> 
         
     <script type="application/ld+json">{
 		"@context": "http://schema.org",
@@ -107,12 +128,12 @@
 	  color: black;
 		} </style>
               <form action="{% url 'business_zone' %}" method="post">
-                <label for="graph">Graph:</label>
+                <label for="graph">Chart:</label>
                 {% csrf_token %}
                 <select name="graph" id="graph" class="graph">
-                  <option value="1">Bar Chart</option>
-                  <option value="2">Line Chart</option>
-                  <option value="4">Pie Chart</option>
+                  <option value="2">Bar Chart</option>
+                  <option value="3">Pie Chart</option>
+                  <option value="4">Line Chart</option>
                 </select>
                 <label for="month">Month:</label>
                 <select name="month" id="month" class="month">
@@ -135,11 +156,14 @@
                   <option value="2023">2023</option>
                   <option value="2024">2024</option>
                 </select>
-                <input type="submit" value="Submit" class="submit">
+                <input type="submit" value="Generate" class="submit">
               </form>
             </div>
             <p class="u-custom-font u-text u-text-2">CHART: {{ display_date }}</p>
-            <img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/bz_water_alloc.png' %}" alt="" data-image-width="1000" data-image-height="700">
+            <!--<img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/bz_water_alloc.png' %}" alt="" data-image-width="1000" data-image-height="700">-->
+            <div class="plot-container">
+              {{ chart|safe }}
+           </div>
           </div>
         </div>
         <h3 class="u-align-center u-custom-font u-font-lato u-text u-text-3">Business Zones</h3>
@@ -147,7 +171,7 @@
           <div class="u-container-layout u-container-layout-2">
             <div class="u-align-center u-border-1 u-border-custom-color-5 u-container-style u-custom-color-4 u-group u-radius u-shape-round u-group-3">
               <div class="u-container-layout u-container-layout-3">
-                <h4 class="u-text u-text-4">SUMMARY OF {{ display_date }}<span style="font-size: 20px;"></span>
+                <h4 class="u-text u-text-4">SUMMARY OF {{ month_date }}<span style="font-size: 20px;"></span>
                 </h4>
               </div>
             </div>
@@ -161,7 +185,7 @@
             <h4 class="u-text u-text-9">Total Non-revenue<br>Water Percentage 
             </h4>
             <h3 class="u-custom-font u-text u-text-10">{{ nrwv_percentage | floatformat:2 }}%&nbsp;</h3>
-            <!--<div class="custom-expanded u-align-center u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-4">
+            <!-- <div class="custom-expanded u-align-center u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-4">
               <div class="u-container-layout u-container-layout-4">
                 <div class="u-align-center u-border-1 u-border-custom-color-5 u-container-style u-custom-color-4 u-group u-radius u-shape-round u-group-5">
                   <div class="u-container-layout">
@@ -178,7 +202,7 @@
                 <img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-2" src="{% static 'img/water_loss.png' %}" alt="" data-image-width="373" data-image-height="373">
                 <p class="u-small-text u-text u-text-variant u-text-17"> In March 2024, Araneta experienced a <span style="font-weight: 700;">15.07%&nbsp;<span style="font-weight: 400;"> water</span>
                   </span>
-                  <span style="font-style: normal;">&nbsp;loss</span> from its <span style="font-weight: 700;">332.88 MLD </span>supply.<br>
+                  <span style="font-style: normal;">loss</span> from its <span style="font-weight: 700;">332.88 MLD </span>water supply.<br>
                 </p>
               </div>
             </div>-->
@@ -187,18 +211,19 @@
         <img class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/bz-map.png' %}" usemap="#image-map" alt="" data-image-width="2356" data-image-height="2880">
         <map name="image-map">
           <area target="" alt="Tandang_sora" title="Tandang_sora" href="" coords="128,113,123,109,115,106,118,96,125,88,133,77,141,73,162,68,175,65,185,61,198,53,219,56,230,54,259,49,259,41,247,39,235,38,230,27,234,15,238,11,243,15,245,25,251,29,265,36,277,36,304,38,352,40,345,121,352,131,360,136,371,138,377,144,391,149,398,154,400,165,399,172,407,175,425,167,436,159,436,147,443,142,452,139,461,134,468,140,496,133,514,124,526,134,525,144,532,150,539,138,549,131,555,140,561,146,569,139,580,138,584,145,571,152,560,163,555,170,547,179,536,188,521,197,494,209,477,226,466,244,458,252,452,263,445,273,441,284,432,276,431,260,425,247,406,252,400,262,390,251,384,240,371,236,361,233,351,238,333,237,323,223,311,213,300,215,290,219,281,224,275,218,266,211,256,213,250,220,240,217,235,203,230,190,229,178,225,167,211,159,202,151,195,151,199,160,194,168,190,161,193,144,194,130,200,123,202,114,195,113,189,101,181,103,175,109,175,117,167,104,151,105,144,108,133,102" shape="poly">
-          <area target="" alt="Elliptical" title="Elliptical" href="" coords="113,119,125,117,133,113,135,105,148,106,156,107,164,106,167,112,167,118,175,118,179,107,185,103,187,112,191,119,196,119,195,126,189,134,188,143,187,158,187,175,200,164,197,154,203,155,210,160,219,167,225,175,227,187,224,194,230,200,233,215,237,219,244,222,252,221,259,217,269,217,275,224,284,227,289,222,296,220,303,215,311,218,319,223,332,236,263,282,268,288,274,293,263,298,248,301,231,305,208,319,215,331,210,372,194,423,96,269,39,260,42,240,64,235,80,229,95,229,104,225,123,204,115,176" shape="poly">
+          <area onclick="handleClick('Elliptical')" target="" alt="Elliptical" title="Elliptical" href="" coords="113,119,125,117,133,113,135,105,148,106,156,107,164,106,167,112,167,118,175,118,179,107,185,103,187,112,191,119,196,119,195,126,189,134,188,143,187,158,187,175,200,164,197,154,203,155,210,160,219,167,225,175,227,187,224,194,230,200,233,215,237,219,244,222,252,221,259,217,269,217,275,224,284,227,289,222,296,220,303,215,311,218,319,223,332,236,263,282,268,288,274,293,263,298,248,301,231,305,208,319,215,331,210,372,194,423,96,269,39,260,42,240,64,235,80,229,95,229,104,225,123,204,115,176" shape="poly">
           <area target="" alt="Up_katipunan" title="Up_katipunan" href="" coords="334,238,350,241,363,238,376,240,384,246,388,259,393,263,404,263,409,253,424,251,427,277,438,285,440,313,451,329,450,339,437,348,430,362,421,388,418,413,400,423,395,431,403,439,409,460,398,468,406,482,400,495,392,513,397,525,395,544,402,555,390,567,362,567,360,551,364,532,365,510,354,500,358,488,340,488,340,480,330,471,342,462,341,453,335,438,330,421,322,417,317,400,253,415,256,402,212,389,206,411,201,406,218,332,211,318,245,302,249,304,259,306,269,302,279,292,270,284,294,265,245,302" shape="poly">
           <area target="" alt="Timog" title="Timog" href="" coords="99,277,192,427,224,497,212,500,196,493,180,484,156,482,152,478,113,477,105,468,88,475,75,473,65,465,48,470,35,469,34,459,6,442,14,422,24,415,30,404,33,390,44,382,64,369,71,357,78,344,87,331" shape="poly">
           <area target="" alt="San_juan" title="San_juan" href="" coords="225,499,207,503,191,490,166,486,154,483,136,480,113,480,104,474,88,475,71,473,64,467,54,471,38,471,28,477,24,490,21,498,15,507,23,513,33,516,42,541,33,559,40,568,49,576,47,590,39,605,34,616,39,621,52,618,90,609,104,599,118,596,133,600,142,594,142,583,150,581,161,581,163,572,175,575,206,584,213,590,218,600,221,607,232,609,245,606,269,594" shape="poly">
           <area target="" alt="Araneta" title="Araneta" href="" coords="209,412,213,393,255,405,251,419,263,419,315,405,319,420,329,429,335,439,335,449,333,458,339,458,331,464,329,470,330,477,337,483,339,490,355,491,356,506,362,511,360,527,359,543,358,558,363,574,390,571,407,561,423,575,439,586,451,595,458,608,466,619,471,633,471,639,457,641,449,620,439,618,428,620,422,639,419,660,418,685,419,695,401,698,372,701,359,701,352,688,335,683,312,686,298,674,279,671,292,643,225,496,197,429" shape="poly">
       </map>
       <script>
-          function handleClick(location) {
-              alert('You clicked on ' + location);
-              // Add your custom functionality here
-          }
-      </script>      </div>
+        function handleClick(location) {
+
+            document.getElementById('info-display').innerHTML = '<h3>' + location + '</h3><p>Additional information about ' + location + '.</p>';
+        }
+    </script>     
+      </div>
     </section>
     
     
