@@ -121,9 +121,9 @@ def Dashboard(request):
         fig, ax = plt.subplots(figsize=(5.5, 4.4))
 
         # Plot past water level
-        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Actual Water Level', linewidth=3)
+        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=5, label='Actual Water Level', linewidth=3)
 
-        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
+        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=5, linewidth=3)
     
         ax.spines['top'].set_color('white')
         ax.spines['right'].set_color('white')
@@ -300,9 +300,9 @@ def Forecast(request):
         fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
         # Plot past water level
-        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=7, label='Actual Water Level', linewidth=3)
+        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=5, label='Actual Water Level', linewidth=3)
         
-        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=7, linewidth=3)
+        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=5, linewidth=3)
     
         ax.spines['top'].set_color('white')
         ax.spines['right'].set_color('white')
@@ -450,9 +450,9 @@ def Forecast(request):
         fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
         # Plot past water level
-        past_plot = ax.plot(original.index, original['RAINFALL'], color='#7CFC00', marker='o', markersize=7, label='Actual Rainfall', linewidth=3)
+        past_plot = ax.plot(original.index, original['RAINFALL'], color='#7CFC00', marker='o', markersize=5, label='Actual Rainfall', linewidth=3)
         
-        forecast_plot = ax.plot(forecast_values_rain.index, forecast_values_rain, label='Forecasted Rainfall', color='orange', marker='o', markersize=7, linewidth=3)
+        forecast_plot = ax.plot(forecast_values_rain.index, forecast_values_rain, label='Forecasted Rainfall', color='orange', marker='o', markersize=5, linewidth=3)
     
         ax.spines['top'].set_color('white')
         ax.spines['right'].set_color('white')
@@ -611,9 +611,9 @@ def Forecast(request):
         # Plotting
         fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
-        past_plot = ax.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=7, label='Actual Drawdown', linewidth=3)
+        past_plot = ax.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=5, label='Actual Drawdown', linewidth=3)
         
-        forecast_plot = ax.plot(forecast_values_drawdwn.index, forecast_values_drawdwn, label='Forecasted Drawdown', color='orange', marker='o', markersize=7, linewidth=3)
+        forecast_plot = ax.plot(forecast_values_drawdwn.index, forecast_values_drawdwn, label='Forecasted Drawdown', color='orange', marker='o', markersize=5, linewidth=3)
     
         ax.spines['top'].set_color('white')
         ax.spines['right'].set_color('white')
