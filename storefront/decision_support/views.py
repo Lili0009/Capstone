@@ -3,6 +3,7 @@ from keras.models import load_model
 from django.shortcuts import render
 import pandas as pd
 import numpy as np
+from django.http import JsonResponse
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 import mpld3
@@ -16,6 +17,7 @@ import csv
 from datetime import datetime as dt_time
 import plotly.graph_objects as go
 import plotly.io as pio
+from django.templatetags.static import static
 
 
 
@@ -293,54 +295,76 @@ def Dashboard(request):
 def Forecast(request):
     def water_level_plot():
         waterlvl_prediction()
-        now = datetime.datetime.now()
-        #dateToday = now.strftime("%A %d %B, %Y  %I:%M%p")
-        plt.cla()
-        # Plotting
-        fig, ax = plt.subplots(figsize=(10.4, 5.6))
 
-        # Plot past water level
-        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=5, label='Actual Water Level', linewidth=3)
-        
-        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=5, linewidth=3)
-    
-        ax.spines['top'].set_color('white')
-        ax.spines['right'].set_color('white')
-        ax.spines['bottom'].set_color('white')
-        ax.spines['left'].set_color('white')
-        
-        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
-        ax.set_ylabel('WATER LEVEL', fontsize=15, color="white", labelpad=7)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        ax.yaxis.set_tick_params(labelcolor='red', labelsize=10)
-        ax.xaxis.set_tick_params(rotation=85, labelcolor='red', labelsize=10)
-        ax.grid(axis='both', linestyle='--', alpha=0.2)
-        ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
-        tooltip_css = """
-        .mpld3-tooltip {
-            color: White; 
-            background-color: rgba(0, 0, 0, 0.7);
-            font-size: 15px; 
-            font-family: Helvetica;
-            padding: 5px;
-            border-radius: 3px;
-        }
-        """
-        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
-        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Water Level'])]
+        import plotly.graph_objects as go
 
-        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
-        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+        past_trace = go.Scatter(
+            x=original.index, 
+            y=original['Water Level'],
+            mode='markers+lines',
+            marker=dict(color='#7CFC00', size=5),
+            line=dict(width=3),
+            name='Actual Water Level',
+            text=[f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Water Level'])],
+            hoverinfo='text'
+        )
 
-        plugins.connect(fig, tooltip1)
-        plugins.connect(fig, tooltip2)
-        plt.tight_layout()
-        html_str = mpld3.fig_to_html(fig)
-        with open('waterlvl_plot.html', 'w') as f:
-            f.write(html_str)
-        plt.close() 
+        forecast_trace = go.Scatter(
+            x=forecast_dates,
+            y=forecast_values,
+            mode='markers+lines',
+            marker=dict(color='orange', size=5),
+            line=dict(width=3),
+            name='Forecasted Water Level',
+            text=[f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)],
+            hoverinfo='text'
+        )
+
+        # Create the figure
+        fig = go.Figure(data=[past_trace, forecast_trace])
+
+        # Update layout
+        fig.update_layout(
+            xaxis=dict(
+                title='DATE',
+                titlefont=dict(size=14, color='white'),
+                tickformat='%b %d',
+                tickangle=85,
+                tickfont=dict(size=10, color='white')
+            ),
+            yaxis=dict(
+                title='WATER LEVEL',
+                titlefont=dict(size=15, color='white'),
+                tickfont=dict(size=10, color='white')
+            ),
+            margin=dict(t=10, l=10, b=10, r=10),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=1.08,
+                xanchor='right',
+                x=1
+            ),
+            hovermode='closest',
+            width = 990,
+            height = 600,
+            modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+        )
+
+        # Add grid lines
+        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)')
+        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)')
+
+        # Save the plot as an HTML file
+        fig.write_html('waterlvl_plot.html')
+
+        # Return the HTML string
+        html_str = fig.to_html()
 
         return html_str
+
     
     forecasted_date = df_forecast.index[14]
     forecasted = df_forecast['Water Level'].iloc[14]
@@ -704,7 +728,7 @@ def Forecast(request):
         with open('rainfall_plot.html', 'r') as f:
             rain_plot = f.read()
     else:
-        with open('waterlvl_plot.html', 'r') as f:
+        with open('waterlvl_plot.html', 'r', encoding='utf-8') as f:
             water_plot = f.read()
         with open('rainfall_plot.html', 'r') as f:
             rain_plot = f.read()
@@ -738,6 +762,7 @@ def Forecast(request):
                    'drawdown_interact_plot': drawdown_interact_plot})
 
 def Business_zone (request):
+    global filtered_data
     data = pd.read_csv('manila_water_data.csv')
     data['Date'] = pd.to_datetime(data['Date'], format='%d-%b-%y')
     last_date = data['Date'].iloc[-1]
@@ -873,7 +898,7 @@ def Business_zone (request):
         araneta = data[data['Business Zone'] == 'Araneta-Libis']
         elliptical = data[data['Business Zone'] == 'Elliptical']
         sjuan = data[data['Business Zone'] == 'San Juan']
-        tandang_sora = data[data['Business Zone'] == 'Tandang Sora']
+        tandang_sora = data[data['Business Zone'] == 'Tandang sora']
         timog = data[data['Business Zone'] == 'Timog']
         up_katipunan = data[data['Business Zone'] == 'Up-Katipunan']
 
@@ -882,7 +907,7 @@ def Business_zone (request):
         fig.add_trace(go.Scatter(x=araneta['Date'], y=araneta['Supply Volume'], mode='lines+markers', name='Araneta-Libis'))
         fig.add_trace(go.Scatter(x=elliptical['Date'], y=elliptical['Supply Volume'], mode='lines+markers', name='Elliptical'))
         fig.add_trace(go.Scatter(x=sjuan['Date'], y=sjuan['Supply Volume'], mode='lines+markers', name='San Juan'))
-        fig.add_trace(go.Scatter(x=tandang_sora['Date'], y=tandang_sora['Supply Volume'], mode='lines+markers', name='Tandang Sora'))
+        fig.add_trace(go.Scatter(x=tandang_sora['Date'], y=tandang_sora['Supply Volume'], mode='lines+markers', name='Tandang sora'))
         fig.add_trace(go.Scatter(x=timog['Date'], y=timog['Supply Volume'], mode='lines+markers', name='Timog'))
         fig.add_trace(go.Scatter(x=up_katipunan['Date'], y=up_katipunan['Supply Volume'], mode='lines+markers', name='Up Katipunan'))
 
@@ -937,12 +962,50 @@ def Business_zone (request):
     total_nrwv = filtered_data['nrwv'].sum()
     nrwv_percentage = (total_nrwv / total_supply) * 100
 
-    
+
     return render(request, 'Business-Zones.html', 
-                  {'Date': dateToday,
-                   'total_supply':total_supply,
-                   'total_nrwv':total_nrwv,
-                   'nrwv_percentage': nrwv_percentage,
-                   'display_date':display_date,
-                   'month_date':month_date,
-                   'chart': chart})
+                {'Date': dateToday,
+                'total_supply':total_supply,
+                'total_nrwv':total_nrwv,
+                'nrwv_percentage': nrwv_percentage,
+                'display_date':display_date,
+                'month_date':month_date,
+                'chart': chart})
+    
+
+def Img_map(request):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if request.method == 'GET':
+            df = pd.DataFrame(filtered_data)
+            location = request.GET.get('location_name')
+            business_zone = df.loc[location]
+            nrwv = business_zone['Supply Volume'] - business_zone['Bill Volume']
+            sv = business_zone['Supply Volume']
+            nrwv_percentage = (business_zone['nrwv'] / business_zone['Supply Volume']) * 100
+
+            nrwv = round(nrwv, 2)
+            sv = round(sv, 2)
+            nrwv_percentage = round(nrwv_percentage, 2)
+            if location == 'Elliptical':
+                img_src = 'img/bz-map(elliptical).png'
+            elif location == 'Tandang sora':
+                img_src = 'img/bz-map(tsora).png'
+            elif location == 'Timog':
+                img_src = 'img/bz-map(timog).png'
+            elif location == 'Up-Katipunan':
+                img_src = 'img/bz-map(up).png'
+            elif location == 'Araneta-Libis':
+                img_src = 'img/bz-map(araneta).png'
+            elif location == 'San Juan':
+                img_src = 'img/bz-map(sjuan).png'
+                
+
+
+            data = {
+                'nrwv': nrwv,
+                'sv': sv,
+                'nrwv_percentage':nrwv_percentage,
+                'location':location,
+                'img_src': static(img_src)
+            }
+        return JsonResponse(data)
