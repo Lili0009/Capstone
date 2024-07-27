@@ -29,12 +29,12 @@
 .u-section-1 .u-image-1 {
   width: 46px;
   height: 46px;
-  margin: 16px auto 0 17px;
+  margin: 22px auto 0 17px;
 }
 
 .u-section-1 .u-text-1 {
   font-weight: 700;
-  margin: -46px 353px 0;
+  margin: -46px 353px 0px 360px;
 }
 
 .u-section-1 .u-text-2 {
@@ -206,7 +206,7 @@
 
 .u-section-2 .u-text-1 {
   font-weight: 700;
-  margin: 28px auto 0 427px;
+  margin: 28px auto 0 490px;
 }
 
 .u-section-2 .u-image-1 {
@@ -362,7 +362,7 @@
 
 .u-section-3 .u-text-1 {
   font-weight: 700;
-  margin: 23px auto 0 428px;
+  margin: 23px auto 0 480px;
 }
 
 .u-section-3 .u-image-1 {

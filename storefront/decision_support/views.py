@@ -1,4 +1,3 @@
-import tensorflow 
 from keras.models import load_model
 from django.shortcuts import render
 import pandas as pd
@@ -18,6 +17,7 @@ from datetime import datetime as dt_time
 import plotly.graph_objects as go
 import plotly.io as pio
 from django.templatetags.static import static
+
 
 
 
@@ -97,7 +97,7 @@ dateToday = now.strftime("%A %d %B, %Y  %I:%M%p")
 
 
 def Dashboard(request):
-    forecasted_tom =  forecast_values.iloc[0]
+    forecasted_tom =  forecast_values.iloc[7]
     Yesterday = original['Water Level'].iloc[-2]
     specific_date_last_year = "2022-Dec-31"
     last_year_date = datetime.datetime.strptime(specific_date_last_year, "%Y-%b-%d").date()
@@ -119,53 +119,77 @@ def Dashboard(request):
         forecast_end_date = start_date + pd.Timedelta(days=7)
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values = df_forecast.loc[forecast_dates, 'Water Level']
-        # Plotting
-        fig, ax = plt.subplots(figsize=(5.5, 4.4))
 
-        # Plot past water level
-        past_plot = ax.plot(original.index, original['Water Level'], color='#7CFC00', marker='o', markersize=5, label='Actual Water Level', linewidth=3)
+        config = {'displaylogo': False}
 
-        forecast_plot = ax.plot(forecast_values.index, forecast_values, label='Forecasted Water Level', color='orange', marker='o', markersize=5, linewidth=3)
-    
-        ax.spines['top'].set_color('white')
-        ax.spines['right'].set_color('white')
-        ax.spines['bottom'].set_color('white')
-        ax.spines['left'].set_color('white')
-        
-        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
-        ax.set_ylabel('WATER LEVEL', fontsize=15, color="white", labelpad=7)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        ax.yaxis.set_tick_params(labelcolor='white', labelsize=10)  
-        ax.xaxis.set_tick_params(rotation=85, labelcolor='white', labelsize=10)
-        ax.grid(axis='both', linestyle='--', alpha=0.2)
-        ax.legend(loc='lower right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
-        tooltip_css = """
-        .mpld3-tooltip {
-            color: White; 
-            background-color: rgba(0, 0, 0, 0.7);
-            font-size: 15px; 
-            font-family: Helvetica;
-            padding: 5px;
-            border-radius: 3px;
-        }
-        """
-        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)]
-        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Water Level'])]
+        past_trace = go.Scatter(
+            x=original.index, 
+            y=original['Water Level'],
+            mode='markers+lines',
+            marker=dict(color='#7CFC00', size=5),
+            line=dict(width=3),
+            name='Actual',
+            hovertemplate='%{y:.2f}',  
+        )
 
-        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
-        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+        forecast_trace = go.Scatter(
+            x=forecast_dates,
+            y=forecast_values,
+            mode='markers+lines',
+            marker=dict(color='orange', size=5),
+            line=dict(width=3),
+            name='Forecasted',
+            hovertemplate='%{y:.2f}',
+        )
 
-        plugins.connect(fig, tooltip1)
-        plugins.connect(fig, tooltip2)
+        fig = go.Figure()
+        fig.add_trace(past_trace)
+        fig.add_trace(forecast_trace)
 
+        fig.update_layout(
+            xaxis=dict(
+                title='DATE',
+                titlefont=dict(size=14, color='black'),
+                tickformat='%b %d',
+                tickangle=0,
+                tickfont=dict(size=10, color='black')
+            ),
+            yaxis=dict(
+                title='WATER LEVEL',
+                titlefont=dict(size=15, color='black'),
+                tickfont=dict(size=10, color='black')
+            ),
+            margin=dict(t=0, l=65, b=70, r=10),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=1.08,
+                xanchor='left',
+                x=0
+            ),
+            hovermode='x unified',
+            hoverlabel=dict(
+                bgcolor='rgba(0, 0, 0, 0.7)',  
+                font=dict(size=15, family='Helvetica', color='white')
+            ),
+            width = 550,
+            height = 450,
+            modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+        )
 
-        plt.tight_layout()
-        html_str = mpld3.fig_to_html(fig)
-        plt.close() 
+        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(0, 0, 0, 0.2)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
+        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(0, 0, 0, 0.2)')
 
+        html_str = pio.to_html(fig, config=config)
         return html_str
 
-        # plt.savefig('decision_support/static/img/water_level_dashboard.png', transparent=True)
     plot = water_level_dashboard()
 
 
@@ -296,7 +320,7 @@ def Forecast(request):
     def water_level_plot():
         waterlvl_prediction()
 
-        import plotly.graph_objects as go
+        config = {'displaylogo': False}
 
         past_trace = go.Scatter(
             x=original.index, 
@@ -304,9 +328,8 @@ def Forecast(request):
             mode='markers+lines',
             marker=dict(color='#7CFC00', size=5),
             line=dict(width=3),
-            name='Actual Water Level',
-            text=[f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Water Level'])],
-            hoverinfo='text'
+            name='Actual',
+            hovertemplate='%{y:.2f}',  
         )
 
         forecast_trace = go.Scatter(
@@ -315,31 +338,35 @@ def Forecast(request):
             mode='markers+lines',
             marker=dict(color='orange', size=5),
             line=dict(width=3),
-            name='Forecasted Water Level',
-            text=[f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values)],
-            hoverinfo='text'
+            name='Forecasted',
+            hovertemplate='%{y:.2f}',
         )
 
-        # Create the figure
-        fig = go.Figure(data=[past_trace, forecast_trace])
+        fig = go.Figure()
+        fig.add_trace(past_trace)
+        fig.add_trace(forecast_trace)
 
-        # Update layout
         fig.update_layout(
             xaxis=dict(
                 title='DATE',
                 titlefont=dict(size=14, color='white'),
                 tickformat='%b %d',
-                tickangle=85,
-                tickfont=dict(size=10, color='white')
+                tickangle=0,
+                tickfont=dict(size=12, color='white')
             ),
             yaxis=dict(
                 title='WATER LEVEL',
                 titlefont=dict(size=15, color='white'),
-                tickfont=dict(size=10, color='white')
+                tickfont=dict(size=12, color='white')
             ),
-            margin=dict(t=10, l=10, b=10, r=10),
+            margin=dict(t=80, l=100, b=10, r=10),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
             legend=dict(
                 orientation='h',
                 yanchor='top',
@@ -347,21 +374,22 @@ def Forecast(request):
                 xanchor='right',
                 x=1
             ),
-            hovermode='closest',
+            hovermode='x unified',
+            hoverlabel=dict(
+                bgcolor='rgba(0, 0, 0, 0.7)',  
+                font=dict(size=15, family='Helvetica', color='white')
+            ),
             width = 990,
             height = 600,
             modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
         )
 
-        # Add grid lines
-        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)')
-        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)')
+        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.3)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
+        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.3)')
 
-        # Save the plot as an HTML file
-        fig.write_html('waterlvl_plot.html')
-
-        # Return the HTML string
-        html_str = fig.to_html()
+        html_str = pio.to_html(fig, config=config)
+        with open('waterlvl_plot.html', 'w', encoding='utf-8') as f:
+            f.write(html_str)
 
         return html_str
 
@@ -466,54 +494,79 @@ def Forecast(request):
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values_rain = df_forecast.loc[forecast_dates, 'RAINFALL']
 
-        # Connect the past data to the forecasted data
-        #last_known_value = original['RAINFALL'].iloc[-1]
+        config = {'displaylogo': False}
 
-        plt.cla()
-        # Plotting
-        fig, ax = plt.subplots(figsize=(10.4, 5.6))
+        past_trace = go.Scatter(
+            x=original.index, 
+            y=original['RAINFALL'],
+            mode='markers+lines',
+            marker=dict(color='#7CFC00', size=5),
+            line=dict(width=3),
+            name='Actual',
+            hovertemplate='%{y:.2f}',  
+        )
 
-        # Plot past water level
-        past_plot = ax.plot(original.index, original['RAINFALL'], color='#7CFC00', marker='o', markersize=5, label='Actual Rainfall', linewidth=3)
-        
-        forecast_plot = ax.plot(forecast_values_rain.index, forecast_values_rain, label='Forecasted Rainfall', color='orange', marker='o', markersize=5, linewidth=3)
-    
-        ax.spines['top'].set_color('white')
-        ax.spines['right'].set_color('white')
-        ax.spines['bottom'].set_color('white')
-        ax.spines['left'].set_color('white')
-        
-        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
-        ax.set_ylabel('RAINFALL', fontsize=15, color="white", labelpad=7)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        ax.yaxis.set_tick_params(labelcolor='red', labelsize=10)
-        ax.xaxis.set_tick_params(rotation=85, labelcolor='red', labelsize=10)
-        ax.grid(axis='both', linestyle='--', alpha=0.2)
-        ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
-        tooltip_css = """
-        .mpld3-tooltip {
-            color: White; 
-            background-color: rgba(0, 0, 0, 0.7);
-            font-size: 15px; 
-            font-family: Helvetica;
-            padding: 5px;
-            border-radius: 3px;
-        }
-        """
-        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values_rain)]
-        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['RAINFALL'])]
+        forecast_trace = go.Scatter(
+            x=forecast_dates,
+            y=forecast_values_rain,
+            mode='markers+lines',
+            marker=dict(color='orange', size=5),
+            line=dict(width=3),
+            name='Forecasted',
+            hovertemplate='%{y:.2f}',
+        )
 
-        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
-        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+        fig = go.Figure()
+        fig.add_trace(past_trace)
+        fig.add_trace(forecast_trace)
 
-        plugins.connect(fig, tooltip1)
-        plugins.connect(fig, tooltip2)
-        plt.tight_layout()
-        html_str = mpld3.fig_to_html(fig)
-        with open('rainfall_plot.html', 'w') as f:
+        fig.update_layout(
+            xaxis=dict(
+                title='DATE',
+                titlefont=dict(size=14, color='white'),
+                tickformat='%b %d',
+                tickangle=0,
+                tickfont=dict(size=12, color='white')
+            ),
+            yaxis=dict(
+                title='RAINFALL',
+                titlefont=dict(size=15, color='white'),
+                tickfont=dict(size=12, color='white')
+            ),
+            margin=dict(t=80, l=100, b=10, r=10),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=1.08,
+                xanchor='right',
+                x=1
+            ),
+            hovermode='x unified',
+            hoverlabel=dict(
+                bgcolor='rgba(0, 0, 0, 0.7)', 
+                font=dict(size=15, family='Helvetica', color='white') 
+            ),
+            width = 990,
+            height = 600,
+            modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+        )
+
+        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.3)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
+        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.3)')
+
+        html_str = pio.to_html(fig, config=config)
+        with open('rainfall_plot.html', 'w', encoding='utf-8') as f:
             f.write(html_str)
-        plt.close() 
 
+
+            
         # PREDICTION
         train_predictions = model_rainfall.predict(X_train)
         test_predictions = model_rainfall.predict(X_test)
@@ -628,53 +681,76 @@ def Forecast(request):
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values_drawdwn = df_forecast.loc[forecast_dates, 'Drawdown']
 
-        # Connect the past data to the forecasted data
-        #last_known_value = original['Drawdown'].iloc[-1]
+        config = {'displaylogo': False}
 
-        plt.cla()
-        # Plotting
-        fig, ax = plt.subplots(figsize=(10.4, 5.6))
+        past_trace = go.Scatter(
+            x=original.index, 
+            y=original['Drawdown'],
+            mode='markers+lines',
+            marker=dict(color='#7CFC00', size=5),
+            line=dict(width=3),
+            name='Actual',
+            hovertemplate='%{y:.2f}',  
+        )
 
-        past_plot = ax.plot(original.index, original['Drawdown'], color='#7CFC00', marker='o', markersize=5, label='Actual Drawdown', linewidth=3)
-        
-        forecast_plot = ax.plot(forecast_values_drawdwn.index, forecast_values_drawdwn, label='Forecasted Drawdown', color='orange', marker='o', markersize=5, linewidth=3)
-    
-        ax.spines['top'].set_color('white')
-        ax.spines['right'].set_color('white')
-        ax.spines['bottom'].set_color('white')
-        ax.spines['left'].set_color('white')
-        
-        ax.set_xlabel('DATE', fontsize=14, color="white", labelpad=5)
-        ax.set_ylabel('Drawdown', fontsize=15, color="white", labelpad=7)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
-        ax.yaxis.set_tick_params(labelcolor='red', labelsize=10)
-        ax.xaxis.set_tick_params(rotation=85, labelcolor='red', labelsize=10)
-        ax.grid(axis='both', linestyle='--', alpha=0.2)
-        ax.legend(loc='upper right', fontsize='medium', ncol=1, borderpad=0.5, borderaxespad=0.5, shadow=True)
-        tooltip_css = """
-        .mpld3-tooltip {
-            color: White; 
-            background-color: rgba(0, 0, 0, 0.7);
-            font-size: 15px; 
-            font-family: Helvetica;
-            padding: 5px;
-            border-radius: 3px;
-        }
-        """
-        formatted_forecast_labels = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(forecast_dates, forecast_values_drawdwn)]
-        formatted_actual_values = [f"Date: {date} <br> Value: {value:.2f}" for date, value in zip(original.index, original['Drawdown'])]
+        forecast_trace = go.Scatter(
+            x=forecast_dates,
+            y=forecast_values_drawdwn,
+            mode='markers+lines',
+            marker=dict(color='orange', size=5),
+            line=dict(width=3),
+            name='Forecasted',
+            hovertemplate='%{y:.2f}',
+        )
 
-        tooltip1 = plugins.PointHTMLTooltip(past_plot[0], labels=list(formatted_actual_values), voffset=20, hoffset=10,css=tooltip_css)
-        tooltip2 = plugins.PointHTMLTooltip(forecast_plot[0], labels=list(formatted_forecast_labels), voffset=20, hoffset=10, css=tooltip_css)
+        fig = go.Figure()
+        fig.add_trace(past_trace)
+        fig.add_trace(forecast_trace)
 
-        plugins.connect(fig, tooltip1)
-        plugins.connect(fig, tooltip2)
-        plt.tight_layout()
-        html_str = mpld3.fig_to_html(fig)
-        with open('drawdown_plot.html', 'w') as f:
+        fig.update_layout(
+            xaxis=dict(
+                title='DATE',
+                titlefont=dict(size=14, color='white'),
+                tickformat='%b %d',
+                tickangle=0,
+                tickfont=dict(size=12, color='white')
+            ),
+            yaxis=dict(
+                title='DRAWDOWN',
+                titlefont=dict(size=15, color='white'),
+                tickfont=dict(size=12, color='white')
+            ),
+            margin=dict(t=80, l=100, b=10, r=10),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(
+                family='Arial',
+                size=14,
+                color='white'
+            ),
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=1.08,
+                xanchor='right',
+                x=1
+            ),
+            hovermode='x unified',
+            hoverlabel=dict(
+                bgcolor='rgba(0, 0, 0, 0.7)', 
+                font=dict(size=15, family='Helvetica', color='white') 
+            ),
+            width = 990,
+            height = 600,
+            modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+        )
+
+        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.3)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
+        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)')
+
+        html_str = pio.to_html(fig, config=config)
+        with open('drawdown_plot.html', 'w', encoding='utf-8') as f:
             f.write(html_str)
-        plt.close() 
-
          # PREDICTION
         train_predictions = model_drawdown.predict(X_train)
         test_predictions = model_drawdown.predict(X_test)
@@ -715,24 +791,24 @@ def Forecast(request):
         fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, drawdown_interact_plot = drawdown_plot()
     elif forecast_waterlvl:
         water_plot = water_level_plot()
-        with open('rainfall_plot.html', 'r') as f:
+        with open('rainfall_plot.html', 'r', encoding='utf-8') as f:
             rain_plot = f.read()
-        with open('drawdown_plot.html', 'r') as f:
+        with open('drawdown_plot.html', 'r', encoding='utf-8') as f:
             drawdown_interact_plot = f.read()
     elif forecast_rainfall:
         fore_rain_smape, act_rain_smape, forecast_rain, actual_rain, rain_plot = rainfall_plot()
-        with open('drawdown_plot.html', 'r') as f:
+        with open('drawdown_plot.html', 'r', encoding='utf-8') as f:
             drawdown_interact_plot = f.read()
     elif forecast_drawdwn:
         fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, drawdown_interact_plot = drawdown_plot()
-        with open('rainfall_plot.html', 'r') as f:
+        with open('rainfall_plot.html', 'r', encoding='utf-8') as f:
             rain_plot = f.read()
     else:
         with open('waterlvl_plot.html', 'r', encoding='utf-8') as f:
             water_plot = f.read()
-        with open('rainfall_plot.html', 'r') as f:
+        with open('rainfall_plot.html', 'r', encoding='utf-8') as f:
             rain_plot = f.read()
-        with open('drawdown_plot.html', 'r') as f:
+        with open('drawdown_plot.html', 'r', encoding='utf-8') as f:
             drawdown_interact_plot = f.read()
     
     
