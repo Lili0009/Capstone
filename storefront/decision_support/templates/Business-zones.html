@@ -207,6 +207,7 @@
            </div>
           </div>
         </div>
+        
         <h3 class="u-align-center u-custom-font u-font-lato u-text u-text-3">Business Zones</h3>
         <div class="custom-expanded u-align-center u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-2">
           <div class="u-container-layout u-container-layout-2">
@@ -216,16 +217,20 @@
                 </h4>
               </div>
             </div>
-            <h4 class="u-text u-text-5">Total Supply Volume </h4>
-            <h3 class="u-custom-font u-text u-text-6">{{ total_supply | floatformat:2 }} mld</h3>
+            <h4 class="u-text u-text-5">Supply Volume </h4>
+            <h3 class="u-custom-font u-text u-text-6">{{ supply | floatformat:2 }} mld</h3>
             <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-2"></div>
-            <h4 class="u-text u-text-7">Total Non-revenue<br>Water Volume 
+            <h4 class="u-text u-text-7">Total Bill Volume<br> 
             </h4>
-            <h3 class="u-custom-font u-text u-text-8">{{ total_nrwv | floatformat:2 }}&nbsp; mld</h3>
+            <h3 class="u-custom-font u-text u-text-8">{{ bill_volume | floatformat:2 }}&nbsp; mld</h3>
             <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-3"></div>
-            <h4 class="u-text u-text-9">Total Non-revenue<br>Water Percentage 
+            <h4 class="u-text u-text-9">Total Non-revenue<br>Water Volume 
             </h4>
-            <h3 class="u-custom-font u-text u-text-10">{{ nrwv_percentage | floatformat:2 }}%&nbsp;</h3>
+            <h3 class="u-custom-font u-text u-text-10">{{ total_nrwv | floatformat:2 }}&nbsp; mld ({{ nrwv_percentage | floatformat:2 }}%)&nbsp;</h3>
+            <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-5"></div>
+            <h4 class="u-text u-text-18">TOTAL <br>WATER SUPPLY</h4>
+            <h3 class="u-custom-font u-text u-text-19">{{water_supply | floatformat:2}} mld</h3>
+
             
             <div id="div">
             <div class="custom-expanded u-align-center u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-4">
@@ -243,9 +248,9 @@
                 <h5 class="u-text u-text-15"> Total Non-revenue Water Volume </h5>
                 <h3 class="u-custom-font u-text u-text-16"><span id="nrwv"></span> mld</h3>
                 <img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-2" src="{% static 'img/water_loss.png' %}" alt="" data-image-width="373" data-image-height="373">
-                <p class="u-small-text u-text u-text-variant u-text-17"> In {{ month_date }}, <span id="location2"></span> experienced a <span id = 'nrwv_percentage' style="font-weight: 700;"></span>%&nbsp;<span style="font-weight: 400;"> water</span>
+                <p class="u-small-text u-text u-text-variant u-text-17"> In {{ month_date }}, <span id="location2"></span> experienced a water loss of <span id = 'nrwv_percentage' style="font-weight: 700;"></span>%&nbsp;<span style="font-weight: 400;"> from its initial supply</span>
                   </span>
-                  <span style="font-style: normal;">loss</span> from its <span id="sv2" style="font-weight: 700;"></span> MLD water supply.<br>
+                  <span style="font-style: normal;">of </span> <span id="sv2" style="font-weight: 700;"></span> MLD water supply resulting in a total of  </span> <span style="font-weight: 700;">{{ water_supply }}</span> MLD being delivered to consumers.
                 </p>
               </div>
             </div>
@@ -263,6 +268,80 @@
           <area onclick="handleClick('San Juan');" target="" alt="San_juan" title="San_juan" href="javascript:void(0);" coords="225,499,207,503,191,490,166,486,154,483,136,480,113,480,104,474,88,475,71,473,64,467,54,471,38,471,28,477,24,490,21,498,15,507,23,513,33,516,42,541,33,559,40,568,49,576,47,590,39,605,34,616,39,621,52,618,90,609,104,599,118,596,133,600,142,594,142,583,150,581,161,581,163,572,175,575,206,584,213,590,218,600,221,607,232,609,245,606,269,594" shape="poly">
           <area onclick="handleClick('Araneta-Libis');" target="" alt="Araneta" title="Araneta" href="javascript:void(0);" coords="209,412,213,393,255,405,251,419,263,419,315,405,319,420,329,429,335,439,335,449,333,458,339,458,331,464,329,470,330,477,337,483,339,490,355,491,356,506,362,511,360,527,359,543,358,558,363,574,390,571,407,561,423,575,439,586,451,595,458,608,466,619,471,633,471,639,457,641,449,620,439,618,428,620,422,639,419,660,418,685,419,695,401,698,372,701,359,701,352,688,335,683,312,686,298,674,279,671,292,643,225,496,197,429" shape="poly">
       </map>
+      </div>
+    </section>
+
+    <section class="u-clearfix u-custom-color-1 u-section-2" id="sec-c56e" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <div class="custom-expanded u-align-center u-table u-table-responsive u-table-1">
+          <table class="u-table-entity u-table-entity-1">
+            <colgroup>
+              <col width="12.4%">
+              <col width="12.4%">
+              <col width="12.4%">
+              <col width="12%">
+              <col width="12.3%">
+              <col width="14.3%">
+              <col width="11.2%">
+              <col width="13.099999999999994%">
+            </colgroup>
+            <thead class="u-align-center u-custom-color-9 u-custom-font u-font-lato u-table-header u-table-header-1">
+              <tr style="height: 77px;">
+                <th class="u-border-6 u-border-custom-color-1 u-custom-color-8 u-table-cell u-table-cell-1">{{ month_date }}</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-2">ARANETA</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-3">ELLIPTICAL</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-4">SAN JUAN</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-5">TANDANG SORA</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-6">TIMOG</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-7">UP-KATIPUNAN</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-8">TOTAL </th>
+              </tr>
+            </thead>
+            <tbody class="u-align-center u-custom-font u-table-alt-palette-1-light-3 u-table-body u-table-body-1">
+              <tr style="height: 77px;">
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-9">SUPPLY VOLUME</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-10">{{ araneta_sv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-11">{{ elli_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-12">{{ sj_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-13">{{ ts_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-14">{{ timog_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-15">{{ up_sv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-16">{{ supply_volume | floatformat:2}} MLD</td>
+              </tr>
+              <tr style="height: 77px;">
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-9">BILL VOLUME</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-10">{{araneta_bill | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-11">{{elli_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-12">{{sj_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-13">{{ts_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-14">{{timog_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-15">{{up_bill | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-16">{{bill_volume | floatformat:2}} MLD</td>
+              </tr>
+              <tr style="height: 79px;">
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-17">NON-REVENUE WATER VOLUME</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-18">{{araneta_nrwv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-19">{{elli_nrwv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-20">{{sj_nrwv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-21">{{ts_nrwv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-22">{{timog_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-23">{{up_nrwv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-24">{{nrw_volume | floatformat:2}} MLD</td>
+              </tr>
+              <tbody class="u-align-center u-custom-font u-table-alt-palette-1-light-3 u-table-body u-table-body-1">
+                <tr style="height: 77px;">
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-9">TOTAL WATER SUPPLY</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-10">{{araneta_ws | floatformat:2}} MLD</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-11">{{elli_ws | floatformat:2}}&nbsp;MLD</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-12">{{sj_ws | floatformat:2}}&nbsp;MLD</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-13">{{ts_ws | floatformat:2}}&nbsp;MLD</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-14">{{timog_ws | floatformat:2}}&nbsp;MLD</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-15">{{up_ws | floatformat:2}} MLD</td>
+                  <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-16">{{water_supply | floatformat:2}} MLD</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
     

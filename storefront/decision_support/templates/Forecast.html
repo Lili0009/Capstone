@@ -27,6 +27,14 @@
           left: 20px;
           width: 550px;
       }
+      .testSet-container{
+          margin: 33px 0px 0px 15px; 
+          padding: 1px;
+          top: 10px; 
+          left: 20px;
+          width: 550px;
+
+      }
       .alloc-container {
           margin: 1px; 
           padding: 1px;
@@ -136,7 +144,10 @@
               </div>
             </div>
             <a href="#sec-e004" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-btn-rectangle u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1">Evaluation Metric </a>
-            <img class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/water_level_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">
+            <div class="testSet-container">
+              {{ water_level_test_set|safe }}
+           </div>
+            <!-- <img class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/water_level_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000"> -->
           </div>
         </div>
       </div>
@@ -174,7 +185,10 @@
               </div>
             </div>
             <a href="#sec-d91f" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
-            <img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/rainfall_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">
+            <div class="testSet-container">
+              {{ rainfall_test_set|safe }}
+           </div>
+            <!--<img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/rainfall_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">-->
           </div>
         </div>
       </div>
@@ -212,7 +226,10 @@
               </div>
             </div>
             <a href="#sec-cb9f" class="u-active-none u-border-2 u-border-no-left u-border-no-right u-border-no-top u-border-palette-1-base u-btn u-button-style u-dialog-link u-hover-none u-none u-text-active-custom-color-2 u-text-hover-custom-color-3 u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Evaluation Metric </a>
-            <img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/drawdown_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">
+            <div class="testSet-container">
+              {{ drawdown_test_set|safe }}
+           </div>
+            <!--<img class="u-image u-image-contain u-image-default u-image-2" src="{% static 'img/drawdown_forecast.png' %}" alt="" data-image-width="2000" data-image-height="1000">-->
           </div>
         </div>
       </div>

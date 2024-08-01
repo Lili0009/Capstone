@@ -113,11 +113,11 @@
        </div>
        <div class="u-align-center u-container-style u-custom-color-6 u-group u-radius u-shape-round u-group-6">
           <div class="u-container-layout u-container-layout-6">
-            <p class="u-text u-text-8">{{ Tomorrow |floatformat:2 }} m</p>
+            <p class="u-text u-text-8">{{ Tomorrow | floatformat:2 }} m</p>
             <img class="u-image u-image-contain u-image-default u-image-4" src="{% static 'img/eval_water_drop.png' %}" alt="" data-image-width="200" data-image-height="299">
-            <p class="u-text u-text-white u-text-9">50.50&nbsp;<br>
+            <p class="u-text u-text-white u-text-9">{{Today | floatformat:2}}&nbsp;<br>
             </p>
-            <p class="u-text u-text-10">{{ Yesterday |floatformat:2 }} m</p>
+            <p class="u-text u-text-10">{{ Yesterday | floatformat:2 }} m</p>
             <p class="u-heading-font u-text u-text-11">{{ date_tom }} </p>
             <p class="u-heading-font u-text u-text-12">{{ date_today }}</p>
             <p class="u-custom-font u-text u-text-13">TODAY'S WATER LEVEL </p>

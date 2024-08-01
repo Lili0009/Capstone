@@ -120,14 +120,14 @@ def Dashboard(request):
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values = df_forecast.loc[forecast_dates, 'Water Level']
 
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
 
         past_trace = go.Scatter(
             x=original.index, 
             y=original['Water Level'],
             mode='markers+lines',
             marker=dict(color='#7CFC00', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Actual',
             hovertemplate='%{y:.2f}',  
         )
@@ -137,7 +137,7 @@ def Dashboard(request):
             y=forecast_values,
             mode='markers+lines',
             marker=dict(color='orange', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Forecasted',
             hovertemplate='%{y:.2f}',
         )
@@ -148,22 +148,22 @@ def Dashboard(request):
 
         fig.update_layout(
             xaxis=dict(
-                title='DATE',
-                titlefont=dict(size=14, color='black'),
-                tickformat='%b %d',
+                title='Date',
+                titlefont=dict(size=14, color='white', family='Helvetica'),
+                tickformat='%b %d, %Y',
                 tickangle=0,
-                tickfont=dict(size=10, color='black')
+                tickfont=dict(size=11, color='white', family='Helvetica')
             ),
             yaxis=dict(
-                title='WATER LEVEL',
-                titlefont=dict(size=15, color='black'),
-                tickfont=dict(size=10, color='black')
+                title='Water Level (m)',
+                titlefont=dict(size=15, color='white', family='Helvetica'),
+                tickfont=dict(size=11, color='white', family='Helvetica')
             ),
             margin=dict(t=0, l=65, b=70, r=10),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(
-                family='Arial',
+                family='Helvetica',
                 size=14,
                 color='white'
             ),
@@ -184,8 +184,8 @@ def Dashboard(request):
             modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
         )
 
-        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(0, 0, 0, 0.2)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
-        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(0, 0, 0, 0.2)')
+        fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
+        fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.2)')
 
         html_str = pio.to_html(fig, config=config)
         return html_str
@@ -320,16 +320,16 @@ def Forecast(request):
     def water_level_plot():
         waterlvl_prediction()
 
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
 
         past_trace = go.Scatter(
             x=original.index, 
             y=original['Water Level'],
             mode='markers+lines',
             marker=dict(color='#7CFC00', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Actual',
-            hovertemplate='%{y:.2f}',  
+            hovertemplate='%{y:.2f} m',  
         )
 
         forecast_trace = go.Scatter(
@@ -337,9 +337,9 @@ def Forecast(request):
             y=forecast_values,
             mode='markers+lines',
             marker=dict(color='orange', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Forecasted',
-            hovertemplate='%{y:.2f}',
+            hovertemplate='%{y:.2f} m',
         )
 
         fig = go.Figure()
@@ -348,18 +348,18 @@ def Forecast(request):
 
         fig.update_layout(
             xaxis=dict(
-                title='DATE',
+                title='Date',
                 titlefont=dict(size=14, color='white'),
-                tickformat='%b %d',
+                tickformat='%b %d, %Y',
                 tickangle=0,
                 tickfont=dict(size=12, color='white')
             ),
             yaxis=dict(
-                title='WATER LEVEL',
+                title='Water Level (m)',
                 titlefont=dict(size=15, color='white'),
                 tickfont=dict(size=12, color='white')
             ),
-            margin=dict(t=80, l=100, b=10, r=10),
+            margin=dict(t=10, l=100, b=10, r=10),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(
@@ -371,8 +371,8 @@ def Forecast(request):
                 orientation='h',
                 yanchor='top',
                 y=1.08,
-                xanchor='right',
-                x=1
+                xanchor='left',
+                x=0
             ),
             hovermode='x unified',
             hoverlabel=dict(
@@ -494,16 +494,16 @@ def Forecast(request):
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values_rain = df_forecast.loc[forecast_dates, 'RAINFALL']
 
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
 
         past_trace = go.Scatter(
             x=original.index, 
             y=original['RAINFALL'],
             mode='markers+lines',
             marker=dict(color='#7CFC00', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Actual',
-            hovertemplate='%{y:.2f}',  
+            hovertemplate='%{y:.2f} mm',  
         )
 
         forecast_trace = go.Scatter(
@@ -511,9 +511,9 @@ def Forecast(request):
             y=forecast_values_rain,
             mode='markers+lines',
             marker=dict(color='orange', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Forecasted',
-            hovertemplate='%{y:.2f}',
+            hovertemplate='%{y:.2f} mm',
         )
 
         fig = go.Figure()
@@ -522,18 +522,18 @@ def Forecast(request):
 
         fig.update_layout(
             xaxis=dict(
-                title='DATE',
+                title='Date',
                 titlefont=dict(size=14, color='white'),
-                tickformat='%b %d',
+                tickformat='%b %d, %Y',
                 tickangle=0,
                 tickfont=dict(size=12, color='white')
             ),
             yaxis=dict(
-                title='RAINFALL',
+                title='Rainfall (mm)',
                 titlefont=dict(size=15, color='white'),
                 tickfont=dict(size=12, color='white')
             ),
-            margin=dict(t=80, l=100, b=10, r=10),
+            margin=dict(t=0, l=100, b=10, r=10),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(
@@ -545,8 +545,8 @@ def Forecast(request):
                 orientation='h',
                 yanchor='top',
                 y=1.08,
-                xanchor='right',
-                x=1
+                xanchor='left',
+                x=0
             ),
             hovermode='x unified',
             hoverlabel=dict(
@@ -681,16 +681,16 @@ def Forecast(request):
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values_drawdwn = df_forecast.loc[forecast_dates, 'Drawdown']
 
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
 
         past_trace = go.Scatter(
             x=original.index, 
             y=original['Drawdown'],
             mode='markers+lines',
             marker=dict(color='#7CFC00', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Actual',
-            hovertemplate='%{y:.2f}',  
+            hovertemplate='%{y:.2f} cu m',  
         )
 
         forecast_trace = go.Scatter(
@@ -698,9 +698,9 @@ def Forecast(request):
             y=forecast_values_drawdwn,
             mode='markers+lines',
             marker=dict(color='orange', size=5),
-            line=dict(width=3),
+            line=dict(width=1.5),
             name='Forecasted',
-            hovertemplate='%{y:.2f}',
+            hovertemplate='%{y:.2f} cu m',
         )
 
         fig = go.Figure()
@@ -709,18 +709,18 @@ def Forecast(request):
 
         fig.update_layout(
             xaxis=dict(
-                title='DATE',
+                title='Date',
                 titlefont=dict(size=14, color='white'),
-                tickformat='%b %d',
+                tickformat='%b %d, %Y',
                 tickangle=0,
                 tickfont=dict(size=12, color='white')
             ),
             yaxis=dict(
-                title='DRAWDOWN',
+                title='Drawdown (cu m)',
                 titlefont=dict(size=15, color='white'),
                 tickfont=dict(size=12, color='white')
             ),
-            margin=dict(t=80, l=100, b=10, r=10),
+            margin=dict(t=0, l=100, b=10, r=10),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(
@@ -732,8 +732,8 @@ def Forecast(request):
                 orientation='h',
                 yanchor='top',
                 y=1.08,
-                xanchor='right',
-                x=1
+                xanchor='left',
+                x=0
             ),
             hovermode='x unified',
             hoverlabel=dict(
@@ -769,7 +769,7 @@ def Forecast(request):
 
         # sMAPE of actual data to forecasted data
         act_drawdown_smape = np.mean((np.abs(df_forecast['Drawdown'].iloc[4] - original['Drawdown'].iloc[-1]) / np.abs(df_forecast['Drawdown'].iloc[4] + original['Drawdown'].iloc[-1])/2)) * 100
-        act_drawdown_smape = 100 - act_drawdown_smape
+        # act_drawdown_smape = 100 - act_drawdown_smape
         act_drawdown_smape = round(act_drawdown_smape,2)
         forecast_drawdown = df_forecast['Drawdown'].iloc[4]
         return fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, html_str
@@ -810,6 +810,13 @@ def Forecast(request):
             rain_plot = f.read()
         with open('drawdown_plot.html', 'r', encoding='utf-8') as f:
             drawdown_interact_plot = f.read()
+
+    with open('water_level_test_set.html', 'r', encoding='utf-8') as f:
+        water_level_test_set = f.read()
+    with open('rainfall_test_set.html', 'r', encoding='utf-8') as f:
+        rainfall_test_set = f.read()
+    with open('drawdown_test_set.html', 'r', encoding='utf-8') as f:
+        drawdown_test_set = f.read()
     
     
                 
@@ -835,7 +842,10 @@ def Forecast(request):
                    'act_rain_smape': act_rain_smape,
                    'water_plot': water_plot,
                    'rain_plot': rain_plot,
-                   'drawdown_interact_plot': drawdown_interact_plot})
+                   'drawdown_interact_plot': drawdown_interact_plot,
+                   'water_level_test_set': water_level_test_set,
+                   'rainfall_test_set':rainfall_test_set,
+                   'drawdown_test_set': drawdown_test_set})
 
 def Business_zone (request):
     global filtered_data
@@ -870,7 +880,7 @@ def Business_zone (request):
     def bar_chart():
         fig = go.Figure()
 
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
         fig.add_trace(go.Bar(x=index, y=filtered_data['Supply Volume'], name='Supply Volume', marker_color='blue'))
         fig.add_trace(go.Bar(x=index, y=filtered_data['nrwv'], name='NRWV', marker_color='skyblue'))
 
@@ -910,7 +920,7 @@ def Business_zone (request):
     def pie_chart():
         colors = ("orange", "cyan", "brown", "grey", "indigo", "beige")
 
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
 
         def func(pct, allvalues):
             absolute = int(pct / 100.*np.sum(allvalues))
@@ -979,7 +989,7 @@ def Business_zone (request):
         up_katipunan = data[data['Business Zone'] == 'Up-Katipunan']
 
         fig = go.Figure()
-        config = {'displaylogo': False}
+        config = {'displaylogo': False, 'displayModeBar': True}
         fig.add_trace(go.Scatter(x=araneta['Date'], y=araneta['Supply Volume'], mode='lines+markers', name='Araneta-Libis'))
         fig.add_trace(go.Scatter(x=elliptical['Date'], y=elliptical['Supply Volume'], mode='lines+markers', name='Elliptical'))
         fig.add_trace(go.Scatter(x=sjuan['Date'], y=sjuan['Supply Volume'], mode='lines+markers', name='San Juan'))
@@ -1034,19 +1044,90 @@ def Business_zone (request):
             chart = f.read()
 
 
-    total_supply = filtered_data['Supply Volume'].sum()
+    supply = filtered_data['Supply Volume'].sum()
     total_nrwv = filtered_data['nrwv'].sum()
-    nrwv_percentage = (total_nrwv / total_supply) * 100
+    nrwv_percentage = (total_nrwv / supply) * 100
+    total_supply = supply - total_nrwv
+
+    def WaterAlloc(location):
+        location_name = filtered_data.loc[location]
+        supply = location_name['Supply Volume']
+        bill = location_name['Bill Volume']
+        nrwv = location_name['Supply Volume'] - location_name['Bill Volume'] 
+        total_sv = location_name['Supply Volume'] - nrwv
+        return supply, bill, nrwv, total_sv
+    
+    araneta_sv = 0
+    araneta_bill = 0
+    araneta_nrwv = 0
+    araneta_ws = 0
+
+    araneta_sv, araneta_bill, araneta_nrwv, araneta_ws = WaterAlloc('Araneta-Libis')
+
+    elli_sv = 0
+    elli_bill = 0
+    elli_nrwv = 0
+    elli_ws = 0
+
+    elli_sv, elli_bill, elli_nrwv, elli_ws = WaterAlloc('Elliptical')
+
+    sj_sv = 0
+    sj_bill = 0
+    sj_nrwv = 0
+    sj_ws = 0
+
+    sj_sv, sj_bill, sj_nrwv, sj_ws = WaterAlloc('San Juan')
+
+    ts_sv = 0
+    ts_bill = 0
+    ts_nrwv = 0
+    ts_ws = 0
+
+    ts_sv, ts_bill, ts_nrwv, ts_ws = WaterAlloc('Tandang sora')
+
+    timog_sv = 0
+    timog_bill = 0
+    timog_nrwv = 0
+    timog_ws = 0
+
+    timog_sv, timog_bill, timog_nrwv, timog_ws = WaterAlloc('Timog')
+    
+    up_sv = 0
+    up_bill = 0
+    up_nrwv = 0
+    up_ws = 0
+
+    up_sv, up_bill, up_nrwv, up_ws = WaterAlloc('Up-Katipunan')
+
+    supply_volume = araneta_sv + elli_sv + sj_sv + ts_sv + timog_sv + up_sv
+    bill_volume = araneta_bill + elli_bill + sj_bill + ts_bill + timog_bill + up_bill
+    nrw_volume = araneta_nrwv + elli_nrwv + sj_nrwv + ts_nrwv + timog_nrwv + up_nrwv
+    water_supply = araneta_ws + elli_ws + sj_ws + ts_ws + timog_ws + up_ws
+
+    
+
+    
 
 
     return render(request, 'Business-Zones.html', 
                 {'Date': dateToday,
-                'total_supply':total_supply,
+                'supply': supply,
+                'total_supply': total_supply,
                 'total_nrwv':total_nrwv,
                 'nrwv_percentage': nrwv_percentage,
                 'display_date':display_date,
                 'month_date':month_date,
-                'chart': chart})
+                'chart': chart,
+                'araneta_sv': araneta_sv, 'araneta_bill': araneta_bill,'araneta_nrwv': araneta_nrwv, 'araneta_ws': araneta_ws,
+                'elli_sv': elli_sv, 'elli_bill': elli_bill, 'elli_nrwv': elli_nrwv, 'elli_ws': elli_ws,
+                'sj_sv':sj_sv, 'sj_bill': sj_bill, 'sj_nrwv': sj_nrwv, 'sj_ws': sj_ws,
+                'ts_sv': ts_sv, 'ts_bill': ts_bill, 'ts_nrwv': ts_nrwv, 'ts_ws': ts_ws,
+                'timog_sv': timog_sv, 'timog_bill': timog_bill, 'timog_nrwv': timog_nrwv, 'timog_ws': timog_ws,
+                'up_sv': up_sv, 'up_bill': up_bill, 'up_nrwv': up_nrwv, 'up_ws': up_ws,
+                'supply_volume': supply_volume,
+                'bill_volume': bill_volume,
+                'nrw_volume': nrw_volume,
+                'water_supply': water_supply})
     
 
 def Img_map(request):
