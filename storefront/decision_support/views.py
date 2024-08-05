@@ -1137,8 +1137,10 @@ def Img_map(request):
             location = request.GET.get('location_name')
             business_zone = df.loc[location]
             nrwv = business_zone['Supply Volume'] - business_zone['Bill Volume']
+            bv = business_zone['Bill Volume']
             sv = business_zone['Supply Volume']
             nrwv_percentage = (business_zone['nrwv'] / business_zone['Supply Volume']) * 100
+            water_supply = sv - nrwv
 
             nrwv = round(nrwv, 2)
             sv = round(sv, 2)
@@ -1161,6 +1163,8 @@ def Img_map(request):
             data = {
                 'nrwv': nrwv,
                 'sv': sv,
+                'bv': bv,
+                'water_supply': water_supply,
                 'nrwv_percentage':nrwv_percentage,
                 'location':location,
                 'img_src': static(img_src)
