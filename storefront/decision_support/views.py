@@ -16,7 +16,10 @@ import csv
 from datetime import datetime as dt_time
 import plotly.graph_objects as go
 import plotly.io as pio
-from django.templatetags.static import static
+import json
+from django.http import HttpResponse
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 
@@ -231,6 +234,7 @@ def Dashboard(request):
             go.Bar(y=y, x=filtered_data['Supply Volume'], orientation='h', name="Supply Volume", base=0),
             go.Bar(y=y, x=-filtered_data['nrwv'], orientation='h', name="NRWV", base=0)
         ])
+        config = {'displaylogo': False, 'displayModeBar': True}
         fig.update_layout(
             barmode='stack',
             plot_bgcolor='rgba(0,0,0,0)',
@@ -274,11 +278,12 @@ def Dashboard(request):
                     size=12,  
                     color="white"  
                 )
-            )
+            ),
+        modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
         )
         fig.update_yaxes(ticktext=filtered_data.index,tickvals=y)
 
-        html_str = fig.to_html()
+        html_str = fig.to_html(config=config)
         return html_str
     
     water_alloc_plot = water_alloc()
@@ -298,7 +303,8 @@ def Dashboard(request):
     display_month = datetime_obj.strftime("%B")
     last_alloc_date = f"{display_month} {display_year}"
     return render(request, 'Dashboard.html', 
-                  {'Tomorrow': forecasted_tom, 
+                  {'room_name': "broadcast",
+                   'Tomorrow': forecasted_tom, 
                    'Today': last_known_value, 
                    'Yesterday': Yesterday,
                    'last_year_today': last_year_value,
@@ -311,10 +317,19 @@ def Dashboard(request):
                    'date_tom': date_tom,
                    'plot': plot,
                    'last_alloc_date': last_alloc_date,
-                   'water_alloc_plot': water_alloc_plot})
+                   'water_alloc_plot': water_alloc_plot,})
 
-
-
+from asgiref.sync import async_to_sync
+def test(request):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "notification_broadcast",
+        {
+            'type': 'send_notification',
+            'message': json.dumps("Notification")
+        }
+    )
+    return HttpResponse("Done")
 
 def Forecast(request):
     def water_level_plot():

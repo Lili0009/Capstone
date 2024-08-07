@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>{% block title %} Dashboard {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/nicepage.css' %}" media="screen">
+    {% block css_page %}<link rel="stylesheet" href="{% static 'css/Dashboard.css' %}" media="screen"> {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/notification.css' %}" media="screen">
+    <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>
+    <script class="u-script" type="text/javascript" src="{% static 'js/nicepage.js' %}" defer=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5"></script>
+    <script src="https://mpld3.github.io/js/mpld3.v0.5.1.js"></script>
+    <meta name="generator" content="Nicepage 6.6.3, nicepage.com">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|ABeeZee:400,400i">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/5135d630a7.js" crossorigin="anonymous"></script>
+<script src="{% static 'mpld3.js' %}"></script>
+
+
+<script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": "",
+    "logo": "images/4-removebg-preview.png"
+}</script>
+<meta name="theme-color" content="#0cbcf5">
+<meta property="og:title" content="Dashboard">
+<meta property="og:type" content="website">
+<meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
+<body data-path-to-root="./" data-include-products="false" class="u-body u-xl-mode" data-lang="en"><header class="u-clearfix u-custom-color-1 u-header u-header" id="sec-8426"><img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-1" src="{% static 'img/logo_header.png' %}" alt="" data-image-width="1250" data-image-height="1250"><p class="u-align-center u-custom-font u-heading-font u-text u-text-1">{{ Date }}</p><nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
+    <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
+      <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#" style="padding: 8px 0px; font-size: calc(1em + 26px);">
+        <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu-hamburger"></use></svg>
+        <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+</g></svg>
+      </a>
+    </div>
+    <div class="u-custom-menu u-nav-container">
+      <ul class="u-custom-font u-font-lato u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'dashboard' %}" style="padding: 10px 0px;">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'forecast' %}" style="padding: 10px 0px;">Forecast</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'business_zone' %}" style="padding: 10px 0px;">Business zones</a>
+</li></ul>
+    </div>
+    <div class="u-custom-menu u-nav-container-collapse">
+      <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+        <div class="u-inner-container-layout u-sidenav-overflow">
+          <div class="u-menu-close"></div>
+          <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'forecast' %}">Forecast</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'business_zone' %}">Business zones</a>
+</li></ul>
+        </div>
+      </div>
+      <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+    </div>
+  </nav>
+
+  <div class="custom-expanded u-clearfix u-custom-html u-custom-html-1">
+  
+    <ul class="nav">
+      <li class="nav-item dropdown notification-section">
+          <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i style="font-size:24px; color: white" class="fa fa-bell"></i></span>
+              <span class="badge" id="notification-badge">0</span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown">
+     
+          </ul>
+      </li>
+  </ul>
+  
+  </div>
+
+</header>
+
+
+    {{ room_name|json_script:"room-name" }}
+    <script>
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        const notificationSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/notification/'
+            + roomName
+            + '/'
+        );
+
+        notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            //document.querySelector('#chat-log').value += (data.message + '\n');
+            console.log(data);
+            document.getElementById("notifications-dropdown").innerHTML = "<li class='dropdown-item'>" + data + "</li><hr class='dropdown-divider'>" + document.getElementById("notifications-dropdown").innerHTML;
+            document.getElementById("notification-badge").innerHTML = parseInt(document.getElementById("notification-badge").innerHTML) + 1;
+        };
+
+        notificationSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+      
+
+       
+    </script>
+
+
+
+{% block content %}
+
+{% endblock %}
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+
+<footer class="u-align-center u-clearfix u-footer u-grey-90 u-footer" id="sec-fab5"><div class="u-clearfix u-sheet u-sheet-1">
+    <p class="u-custom-font u-font-merriweather u-text u-text-1">OUR LOCATION </p>
+    <a href="#" class="u-image u-logo u-image-1" data-image-width="301" data-image-height="201">
+      <img src="{% static 'img/logo_footer.png' %}" class="u-logo-image u-logo-image-1">
+    </a>
+    <p class="u-custom-font u-font-merriweather u-text u-text-default u-text-2">MENU </p>
+    <div class="u-grey-light-2 u-map u-map-1">
+      <div class="embed-responsive">
+        <iframe class="embed-responsive-item" src="https://maps.google.com/maps?output=embed&amp;q=Manila%20Water%20Balara%20Business%20Area%0AQuezon%20City%0AQuezon%20City%0APhilippines&amp;z=10&amp;t=m" data-map="JTdCJTIyYWRkcmVzcyUyMiUzQSUyMk1hbmlsYSUyMFdhdGVyJTIwQmFsYXJhJTIwQnVzaW5lc3MlMjBBcmVhJTVDblF1ZXpvbiUyMENpdHklNUNuUXVlem9uJTIwQ2l0eSU1Q25QaGlsaXBwaW5lcyUyMiUyQyUyMnpvb20lMjIlM0ExMCUyQyUyMnR5cGVJZCUyMiUzQSUyMnJvYWQlMjIlMkMlMjJsYW5nJTIyJTNBbnVsbCUyQyUyMmFwaUtleSUyMiUzQW51bGwlMkMlMjJtYXJrZXJzJTIyJTNBJTVCJTVEJTdE"></iframe>
+      </div>
+    </div>
+    <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
+      <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 0.75rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
+        <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
+          <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-502c"></use></svg>
+          <svg class="u-svg-content" version="1.1" id="svg-502c" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+</g></svg>
+        </a>
+      </div>
+      <div class="u-custom-menu u-nav-container">
+        <ul class="u-custom-font u-font-lato u-nav u-spacing-20 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Forecast</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Business zones</a>
+</li></ul>
+      </div>
+      <div class="u-custom-menu u-nav-container-collapse">
+        <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+          <div class="u-inner-container-layout u-sidenav-overflow">
+            <div class="u-menu-close"></div>
+            <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Forecast</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Business zones</a>
+</li></ul>
+          </div>
+        </div>
+        <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+      </div>
+    </nav><span class="u-file-icon u-icon u-text-white u-icon-1"><img src="{% static 'img/gmail.png' %}" alt=""></span>
+    <p class="u-text u-text-default u-text-3">
+      <a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-palette-1-base u-btn-1" data-href="mailto:hydrocisionadmin@gmail.com">hydrocisionadmin@gmail.com </a>
+    </p>
+  </div></footer>
+
+
+</body></html>
