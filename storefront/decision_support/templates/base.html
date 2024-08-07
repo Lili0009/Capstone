@@ -104,11 +104,14 @@
             console.error('Chat socket closed unexpectedly');
         };
 
-      
+        notificationSocket.onerror = function(error) {
+          console.error('WebSocket error:', error);
+        };
+
 
        
     </script>
-
+ 
 
 
 {% block content %}
