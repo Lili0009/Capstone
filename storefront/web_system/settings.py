@@ -25,25 +25,19 @@ SECRET_KEY = 'django-insecure-u3ckdn3om^e)m(c&&mbz*(=kj@5ph+k_qs2a7s-senb)h&f*=a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
-    'decision_support',
-    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'channels',
-    'notifications_app'
-
+    'decision_support'
 ]
 
 MIDDLEWARE = [
@@ -73,8 +67,8 @@ TEMPLATES = [
         },
     },
 ]
-# WSGI_APPLICATION = 'web_system.wsgi.application'
-ASGI_APPLICATION = 'web_system.asgi.application'
+
+WSGI_APPLICATION = 'web_system.wsgi.application'
 
 
 # Database
@@ -112,11 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Manila'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = True
 
@@ -131,12 +123,3 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'decision_support')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6380)],
-        },
-    },
-}
