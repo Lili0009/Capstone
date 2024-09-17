@@ -1,0 +1,393 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>Business Zone</title>
+    <link rel="stylesheet" href="{% static 'css/nicepage.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'css/Business-zones.css' %}" media="screen">
+    <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>
+    <script class="u-script" type="text/javascript" src="{% static 'js/nicepage.js' %}" defer=""></script>
+    <meta name="generator" content="Nicepage 6.6.3, nicepage.com">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|ABeeZee:400,400i">
+    
+    <script>
+
+        function handleClick(location) {
+          $.ajax({
+              type: "GET",
+              url: '{% url "img_map" %}',
+              data: {
+                location_name: location  
+            },
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              },
+              success: function (data) {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    $('#response-container').html('<p>An error occurred: ' + data.error + '</p>');
+                } else {
+                    show('div');
+                    $('#nrwv').text(data.nrwv);
+                    $('#bv').text(data.bv);
+                    $('#sv1').text(data.sv);
+                    $('#sv2').text(data.sv);
+                    $('#water_supply').text(data.water_supply);
+                    $('#nrwv_percentage').text(data.nrwv_percentage);
+                    $('#location1').text(data.location);
+                    $('#location2').text(data.location);
+                    $('#imageMap').attr('src', data.img_src);
+                }
+                function show(divId) {
+                  $("#" + divId).fadeIn("slow");
+                }
+              }
+          });
+        }
+
+
+  </script>
+
+
+    {% load static %}
+    <script src="{% static 'mpld3.js' %}"></script>
+    <style>
+      rect.mpld3-axesbg {
+          fill: none !important; 
+      }
+      .plot-container {
+          margin: 0px 0px 0px 70px; 
+          padding: 1px;
+          top: 10px; 
+          left: 20px;
+          width: 550px;
+      }
+      .alloc-container {
+          margin: 1px; 
+          padding: 1px;
+          top: 70px; 
+          left: 20px;
+
+      }
+      #div {
+            display: none;
+        }
+    </style>
+    </style> 
+        
+    <script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "",
+		"logo": "images/4-removebg-preview.png"
+}</script>
+    <meta name="theme-color" content="#0cbcf5">
+    <meta property="og:title" content="Business zones">
+    <meta property="og:type" content="website">
+  <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
+  <body data-path-to-root="./" data-include-products="false" class="u-body u-xl-mode" data-lang="en"><header class="u-clearfix u-custom-color-1 u-header u-header" id="sec-8426"><img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-1" src="{% static 'img/logo_header.png' %}" alt="" data-image-width="1250" data-image-height="1250"><p class="u-align-center u-custom-font u-heading-font u-text u-text-1">{{ Date }} </p><nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
+        <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
+          <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#" style="padding: 8px 0px; font-size: calc(1em + 26px);">
+            <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu-hamburger"></use></svg>
+            <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+</g></svg>
+          </a>
+        </div>
+        <div class="u-custom-menu u-nav-container">
+          <ul class="u-custom-font u-font-lato u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'dashboard' %}" style="padding: 10px 0px;">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'forecast' %}" style="padding: 10px 0px;">Forecast</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="{% url 'business_zone' %}" style="padding: 10px 0px;">Business zones</a>
+</li></ul>
+        </div>
+        <div class="u-custom-menu u-nav-container-collapse">
+          <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+            <div class="u-inner-container-layout u-sidenav-overflow">
+              <div class="u-menu-close"></div>
+              <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'forecast' %}">Forecast</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'business_zone' %}">Business zones</a>
+</li></ul>
+            </div>
+          </div>
+          <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+        </div>
+      </nav><div class="custom-expanded u-clearfix u-custom-html u-custom-html-1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"><i style="font-size:24px; color: white" class="fa fa-bell"></i>
+      </div></header>
+    <section class="u-clearfix u-custom-color-1 u-section-1" id="sec-1574">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <h3 class="u-align-left u-custom-font u-font-lato u-text u-text-default u-text-1">Water Allocation </h3>
+        <div class="u-align-left u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-1"></div>
+        <div class="custom-expanded u-align-center u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-1">
+          <div class="u-container-layout u-container-layout-1">
+            <div class="custom-expanded u-clearfix u-custom-html u-custom-html-1">
+              <style> .month{
+	  color: black;
+	  height: 32px;
+	  padding: 5px;
+	  font-size: 16px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	  background-color: #f9f9f9;
+	  width: 150px;
+	}
+	.year{
+	color:black;
+	height:32px;
+	}
+	.submit{
+	background: #0066A2;
+	color: white;
+	border-style: outset;
+	border-color: #0066A2;
+	height: 32px;
+	width: 90px;
+	font: bold15px arial,sans-serif;
+	text-shadow: none;
+	}
+	.graph {
+		color: black;
+		height: 32px;
+		padding: 5px;
+		font-size: 16px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background-color: #f9f9f9;
+		width: 150px;
+		font-family: Helvetica;
+	}
+	/* Styling the options within the dropdown */
+	.graph option {
+	  color: #333;
+	  background-color: #fff;
+	  padding: 5px;
+	  font-size: 16px;
+	}
+	/* Change the background color and text color when an option is hovered over */
+	.graph option:hover {
+	  background-color: #eee;
+	  color: black;
+		} </style>
+              <form action="{% url 'business_zone' %}" method="post">
+                <label for="graph">Chart:</label>
+                {% csrf_token %}
+                <select name="graph" id="graph" class="graph">
+                  <option value="2">Bar Chart</option>
+                  <option value="3">Pie Chart</option>
+                  <option value="4">Line Chart</option>
+                </select>
+                <label for="month">Month:</label>
+                <select name="month" id="month" class="month">
+                  <option value="01">January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </select>
+                <label for="year">Year:</label>
+                <select name="year" id="year" class="year">
+                  <option value="2022">2022</option>
+                  <option value="2023">2023</option>
+                  <option value="2024">2024</option>
+                </select>
+                <input type="submit" value="Generate" class="submit">
+              </form>
+            </div>
+            <p class="u-custom-font u-text u-text-2">CHART: {{ display_date }}</p>
+            <!--<img class="u-image u-image-contain u-image-default u-image-1" src="{% static 'img/bz_water_alloc.png' %}" alt="" data-image-width="1000" data-image-height="700">-->
+            <div class="plot-container">
+              {{ chart|safe }}
+           </div>
+          </div>
+        </div>
+        
+        <h3 class="u-align-center u-custom-font u-font-lato u-text u-text-3">Business Zones</h3>
+        <div class="custom-expanded u-align-center u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-2">
+          <div class="u-container-layout u-container-layout-2">
+            <div class="u-align-center u-border-1 u-border-custom-color-5 u-container-style u-custom-color-4 u-group u-radius u-shape-round u-group-3">
+              <div class="u-container-layout u-valign-middle u-container-layout-3">
+                <h4 class="u-text u-text-4">SUMMARY OF {{ month_date }}<span style="font-size: 20px;"></span>
+                </h4>
+              </div>
+            </div>
+            <h4 class="u-text u-text-5">Supply Volume </h4>
+            <h3 class="u-custom-font u-text u-text-6">{{ supply | floatformat:2 }} mld</h3>
+            <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-2"></div>
+            <h4 class="u-text u-text-7">Total Bill Volume<br> 
+            </h4>
+            <h3 class="u-custom-font u-text u-text-8">{{ bill_volume | floatformat:2 }}&nbsp; mld</h3>
+            <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-3"></div>
+            <h4 class="u-text u-text-9">Total Non-revenue<br>Water Volume 
+            </h4>
+            <h3 class="u-custom-font u-text u-text-10">{{ total_nrwv | floatformat:2 }}&nbsp; mld ({{ nrwv_percentage | floatformat:2 }}%)&nbsp;</h3>
+            <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-4"></div>
+            <h4 class="u-text u-text-11">TOTAL <br>WATER SUPPLY</h4>
+            <h3 class="u-custom-font u-text u-text-12">{{water_supply | floatformat:2}} mld</h3>
+
+            <div id="div">
+            <div class="custom-expanded u-border-2 u-border-custom-color-3 u-container-style u-group u-palette-5-dark-3 u-radius u-shape-round u-group-4">
+              <div class="u-container-layout u-container-layout-4">
+                <div class="u-border-3 u-border-custom-color-5 u-line u-line-vertical u-opacity u-opacity-65 u-line-5"></div>
+                <div class="u-align-center u-border-1 u-border-custom-color-5 u-container-style u-custom-color-4 u-group u-radius u-shape-round u-group-5">
+                  <div class="u-container-layout">
+                    <h4 class="u-text u-text-13"><span id = 'location1' style="font-weight: 700;"></span>
+                    </h4>
+                    <h5 class="u-text u-text-14">{{ month_date }}</h5>
+                  </div>
+                </div>
+                <h5 class="u-align-center u-text u-text-15"> Bill Volume</h5>
+                <h5 class="u-align-center u-text u-text-16"> Supply Volume </h5>
+                <h3 class="u-align-center u-custom-font u-text u-text-17"><span id="sv1"></span> mld</h3>
+                <h3 class="u-align-center u-custom-font u-text u-text-18"><span id="bv"></span> mld</h3>
+                <div class="u-border-3 u-border-custom-color-5 u-line u-line-horizontal u-opacity u-opacity-65 u-line-6"></div>
+                <h5 class="u-align-center u-text u-text-19"> Non-revenue Water Volume </h5>
+                <h3 class="u-align-center u-custom-font u-text u-text-20"><span id="nrwv"></span> mld</h3>
+                <img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-2" src="{% static 'img/water_loss.png' %}" alt="" data-image-width="373" data-image-height="373">
+                <p class="u-align-left u-small-text u-text u-text-variant u-text-23"> In {{ month_date }}, <span id="location2"></span> experienced a&nbsp;​water loss of <span id = 'nrwv_percentage' style="font-weight: 700; font-size: 1.25rem;">%</span> from its initial supply of <span id="sv2" style="font-weight: 700;"></span> mld resulting in a total of<span style="font-weight: 700;">
+                    <span id = 'water_supply' style="font-size: 1.25rem;"> mld</span>
+                  </span> being delivered to consumers.<br>
+                </p>
+              </div>
+            </div>
+          </div>
+            
+          </div>
+        </div>
+        <img id='imageMap' class="u-image u-image-contain u-image-default u-image-3" src="{% static 'img/bz-map.png' %}" usemap="#image-map" alt="" data-image-width="2356" data-image-height="2880">
+        <map name="image-map">
+          <area onclick="handleClick('Tandang sora');" target="" alt="Tandang_sora" title="Tandang_sora" href="javascript:void(0);" coords="128,113,123,109,115,106,118,96,125,88,133,77,141,73,162,68,175,65,185,61,198,53,219,56,230,54,259,49,259,41,247,39,235,38,230,27,234,15,238,11,243,15,245,25,251,29,265,36,277,36,304,38,352,40,345,121,352,131,360,136,371,138,377,144,391,149,398,154,400,165,399,172,407,175,425,167,436,159,436,147,443,142,452,139,461,134,468,140,496,133,514,124,526,134,525,144,532,150,539,138,549,131,555,140,561,146,569,139,580,138,584,145,571,152,560,163,555,170,547,179,536,188,521,197,494,209,477,226,466,244,458,252,452,263,445,273,441,284,432,276,431,260,425,247,406,252,400,262,390,251,384,240,371,236,361,233,351,238,333,237,323,223,311,213,300,215,290,219,281,224,275,218,266,211,256,213,250,220,240,217,235,203,230,190,229,178,225,167,211,159,202,151,195,151,199,160,194,168,190,161,193,144,194,130,200,123,202,114,195,113,189,101,181,103,175,109,175,117,167,104,151,105,144,108,133,102" shape="poly">
+          <area onclick="handleClick('Elliptical');" target="" alt="Elliptical" title="Elliptical" href="javascript:void(0);"  coords="113,119,125,117,133,113,135,105,148,106,156,107,164,106,167,112,167,118,175,118,179,107,185,103,187,112,191,119,196,119,195,126,189,134,188,143,187,158,187,175,200,164,197,154,203,155,210,160,219,167,225,175,227,187,224,194,230,200,233,215,237,219,244,222,252,221,259,217,269,217,275,224,284,227,289,222,296,220,303,215,311,218,319,223,332,236,263,282,268,288,274,293,263,298,248,301,231,305,208,319,215,331,210,372,194,423,96,269,39,260,42,240,64,235,80,229,95,229,104,225,123,204,115,176" shape="poly">
+          <area onclick="handleClick('Up-Katipunan');" target="" alt="Up_katipunan" title="Up_katipunan" href="javascript:void(0);" coords="334,238,350,241,363,238,376,240,384,246,388,259,393,263,404,263,409,253,424,251,427,277,438,285,440,313,451,329,450,339,437,348,430,362,421,388,418,413,400,423,395,431,403,439,409,460,398,468,406,482,400,495,392,513,397,525,395,544,402,555,390,567,362,567,360,551,364,532,365,510,354,500,358,488,340,488,340,480,330,471,342,462,341,453,335,438,330,421,322,417,317,400,253,415,256,402,212,389,206,411,201,406,218,332,211,318,245,302,249,304,259,306,269,302,279,292,270,284,294,265,245,302" shape="poly">
+          <area onclick="handleClick('Timog');" target="" alt="Timog" title="Timog" href="javascript:void(0);" coords="99,277,192,427,224,497,212,500,196,493,180,484,156,482,152,478,113,477,105,468,88,475,75,473,65,465,48,470,35,469,34,459,6,442,14,422,24,415,30,404,33,390,44,382,64,369,71,357,78,344,87,331" shape="poly">
+          <area onclick="handleClick('San Juan');" target="" alt="San_juan" title="San_juan" href="javascript:void(0);" coords="225,499,207,503,191,490,166,486,154,483,136,480,113,480,104,474,88,475,71,473,64,467,54,471,38,471,28,477,24,490,21,498,15,507,23,513,33,516,42,541,33,559,40,568,49,576,47,590,39,605,34,616,39,621,52,618,90,609,104,599,118,596,133,600,142,594,142,583,150,581,161,581,163,572,175,575,206,584,213,590,218,600,221,607,232,609,245,606,269,594" shape="poly">
+          <area onclick="handleClick('Araneta-Libis');" target="" alt="Araneta" title="Araneta" href="javascript:void(0);" coords="209,412,213,393,255,405,251,419,263,419,315,405,319,420,329,429,335,439,335,449,333,458,339,458,331,464,329,470,330,477,337,483,339,490,355,491,356,506,362,511,360,527,359,543,358,558,363,574,390,571,407,561,423,575,439,586,451,595,458,608,466,619,471,633,471,639,457,641,449,620,439,618,428,620,422,639,419,660,418,685,419,695,401,698,372,701,359,701,352,688,335,683,312,686,298,674,279,671,292,643,225,496,197,429" shape="poly">
+      </map>
+      </div>
+    </section>
+
+    <section class="u-clearfix u-custom-color-1 u-section-2" id="sec-c56e" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <div class="custom-expanded u-align-center u-table u-table-responsive u-table-1">
+          <table class="u-table-entity u-table-entity-1">
+            <colgroup>
+              <col width="12.4%">
+              <col width="12.4%">
+              <col width="12.4%">
+              <col width="12%">
+              <col width="12.3%">
+              <col width="14.3%">
+              <col width="11.2%">
+              <col width="13.099999999999994%">
+            </colgroup>
+            <thead class="u-align-center u-custom-color-9 u-custom-font u-font-lato u-table-header u-table-header-1">
+              <tr style="height: 77px;">
+                <th class="u-border-6 u-border-custom-color-1 u-custom-color-8 u-table-cell u-table-cell-1">{{ month_date }}</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-2">ARANETA</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-3">ELLIPTICAL</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-4">SAN JUAN</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-5">TANDANG SORA</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-6">TIMOG</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-7">UP-KATIPUNAN</th>
+                <th class="u-border-6 u-border-custom-color-1 u-table-cell u-table-cell-8">TOTAL </th>
+              </tr>
+            </thead>
+            <tbody class="u-align-center u-custom-font u-table-alt-palette-1-light-3 u-table-body u-table-body-1">
+              <tr style="height: 77px;">
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-9">SUPPLY VOLUME</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-10">{{ araneta_sv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-11">{{ elli_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-12">{{ sj_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-13">{{ ts_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-14">{{ timog_sv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-15">{{ up_sv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-16">{{ supply_volume | floatformat:2}} MLD</td>
+              </tr>
+              <tr style="height: 77px;">
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-9">BILL VOLUME</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-10">{{araneta_bill | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-11">{{elli_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-12">{{sj_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-13">{{ts_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-14">{{timog_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-15">{{up_bill | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-16">{{bill_volume | floatformat:2}} MLD</td>
+              </tr>
+              <tr style="height: 79px;">
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-9 u-first-column u-table-cell u-table-cell-17">NON-REVENUE WATER VOLUME</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-18">{{araneta_nrwv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-19">{{elli_nrwv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-20">{{sj_nrwv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-21">{{ts_nrwv | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-22">{{timog_bill | floatformat:2}}&nbsp;MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-23">{{up_nrwv | floatformat:2}} MLD</td>
+                <td class="u-border-6 u-border-custom-color-1 u-custom-color-7 u-custom-font u-font-arial u-table-cell u-table-cell-24">{{nrw_volume | floatformat:2}} MLD</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <footer class="u-align-center u-clearfix u-footer u-grey-90 u-footer" id="sec-fab5"><div class="u-clearfix u-sheet u-sheet-1">
+      <p class="u-custom-font u-font-merriweather u-text u-text-1">OUR LOCATION </p>
+      <a href="#" class="u-image u-logo u-image-1" data-image-width="301" data-image-height="201">
+        <img src="{% static 'img/logo_footer.png' %}" class="u-logo-image u-logo-image-1">
+      </a>
+      <p class="u-custom-font u-font-merriweather u-text u-text-default u-text-2">MENU </p>
+      <div class="u-grey-light-2 u-map u-map-1">
+        <div class="embed-responsive">
+          <iframe class="embed-responsive-item" src="https://maps.google.com/maps?output=embed&amp;q=Manila%20Water%20Balara%20Business%20Area%0AQuezon%20City%0AQuezon%20City%0APhilippines&amp;z=10&amp;t=m" data-map="JTdCJTIyYWRkcmVzcyUyMiUzQSUyMk1hbmlsYSUyMFdhdGVyJTIwQmFsYXJhJTIwQnVzaW5lc3MlMjBBcmVhJTVDblF1ZXpvbiUyMENpdHklNUNuUXVlem9uJTIwQ2l0eSU1Q25QaGlsaXBwaW5lcyUyMiUyQyUyMnpvb20lMjIlM0ExMCUyQyUyMnR5cGVJZCUyMiUzQSUyMnJvYWQlMjIlMkMlMjJsYW5nJTIyJTNBbnVsbCUyQyUyMmFwaUtleSUyMiUzQW51bGwlMkMlMjJtYXJrZXJzJTIyJTNBJTVCJTVEJTdE"></iframe>
+        </div>
+      </div>
+      <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" data-responsive-from="SM">
+        <div class="menu-collapse u-custom-font u-font-lato" style="font-size: 0.75rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
+          <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
+            <svg class="u-svg-link" viewBox="0 0 24 24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-502c"></use></svg>
+            <svg class="u-svg-content" version="1.1" id="svg-502c" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+</g></svg>
+          </a>
+        </div>
+        <div class="u-custom-menu u-nav-container">
+          <ul class="u-custom-font u-font-lato u-nav u-spacing-20 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Forecast</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-body-alt-color u-text-hover-palette-1-base" href="#" style="padding: 22px 0px;">Business zones</a>
+</li></ul>
+        </div>
+        <div class="u-custom-menu u-nav-container-collapse">
+          <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+            <div class="u-inner-container-layout u-sidenav-overflow">
+              <div class="u-menu-close"></div>
+              <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Dashboard</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Forecast</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">Business zones</a>
+</li></ul>
+            </div>
+          </div>
+          <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+        </div>
+      </nav><span class="u-file-icon u-icon u-text-white u-icon-1"><img src="{% static 'img/gmail.png' %}" alt=""></span>
+      <p class="u-text u-text-default u-text-3">
+        <a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-palette-1-base u-btn-1" data-href="mailto:hydrocisionadmin@gmail.com">hydrocisionadmin@gmail.com </a>
+      </p>
+    </div></footer>
+  
+</body></html>

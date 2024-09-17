@@ -1,5 +1,10 @@
 from django.contrib import admin
-# 👇 1. Add this line import notification model
-from .models import Notification
+from django_celery_beat.models import SolarSchedule, ClockedSchedule, IntervalSchedule
 
-admin.site.register(Notification)
+# Register your models here.
+from .models import BroadcastNotification
+admin.site.register(BroadcastNotification)
+
+admin.site.unregister(SolarSchedule)
+admin.site.unregister(ClockedSchedule)
+admin.site.unregister(IntervalSchedule)

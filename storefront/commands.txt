@@ -1,0 +1,7 @@
+netstat -aon | findstr :8000
+
+sudo redis-server /etc/redis/redis.conf
+redis-cli ping or redis-cli -p 6380 ping
+
+celery -A web_system beat -l INFO
+celery -A web_system.celery worker --pool=solo -l info

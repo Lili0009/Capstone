@@ -5,20 +5,16 @@ import numpy as np
 from django.http import JsonResponse
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
-import mpld3
-from mpld3 import plugins
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import datetime
-import matplotlib.dates as mdates
 import csv
 from datetime import datetime as dt_time
 import plotly.graph_objects as go
 import plotly.io as pio
+from django.http import JsonResponse
 from django.templatetags.static import static
-
-
 
 
 def waterlvl_prediction():
@@ -99,9 +95,12 @@ dateToday = now.strftime("%A %d %B, %Y  %I:%M%p")
 def Dashboard(request):
     forecasted_tom =  forecast_values.iloc[7]
     Yesterday = original['Water Level'].iloc[-2]
-    specific_date_last_year = "2022-Dec-31"
-    last_year_date = datetime.datetime.strptime(specific_date_last_year, "%Y-%b-%d").date()
+
+    last_date = data.index[-1]
+    
+    last_year_date = last_date.replace(year=last_date.year - 1)
     last_year_timestamp = pd.Timestamp(last_year_date)
+
     last_year_value = data.loc[last_year_timestamp, 'Water Level']
     date_last_year = last_year_timestamp.strftime("%B %d, %Y")
     min_water_level = data['Water Level'].min()
@@ -231,6 +230,7 @@ def Dashboard(request):
             go.Bar(y=y, x=filtered_data['Supply Volume'], orientation='h', name="Supply Volume", base=0),
             go.Bar(y=y, x=-filtered_data['nrwv'], orientation='h', name="NRWV", base=0)
         ])
+        config = {'displaylogo': False, 'displayModeBar': True}
         fig.update_layout(
             barmode='stack',
             plot_bgcolor='rgba(0,0,0,0)',
@@ -274,11 +274,12 @@ def Dashboard(request):
                     size=12,  
                     color="white"  
                 )
-            )
+            ),
+        modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
         )
         fig.update_yaxes(ticktext=filtered_data.index,tickvals=y)
 
-        html_str = fig.to_html()
+        html_str = fig.to_html(config=config)
         return html_str
     
     water_alloc_plot = water_alloc()
@@ -298,7 +299,8 @@ def Dashboard(request):
     display_month = datetime_obj.strftime("%B")
     last_alloc_date = f"{display_month} {display_year}"
     return render(request, 'Dashboard.html', 
-                  {'Tomorrow': forecasted_tom, 
+                  {'room_name': "broadcast",
+                   'Tomorrow': forecasted_tom, 
                    'Today': last_known_value, 
                    'Yesterday': Yesterday,
                    'last_year_today': last_year_value,
@@ -311,8 +313,7 @@ def Dashboard(request):
                    'date_tom': date_tom,
                    'plot': plot,
                    'last_alloc_date': last_alloc_date,
-                   'water_alloc_plot': water_alloc_plot})
-
+                   'water_alloc_plot': water_alloc_plot,})
 
 
 
@@ -394,8 +395,8 @@ def Forecast(request):
         return html_str
 
     
-    forecasted_date = df_forecast.index[14]
-    forecasted = df_forecast['Water Level'].iloc[14]
+    forecasted_date = df_forecast.index[15]
+    forecasted = df_forecast['Water Level'].iloc[15]
     forecasted = round(forecasted, 2)
 
     water_plot = water_level_plot()
@@ -419,16 +420,14 @@ def Forecast(request):
     #fore_smape = 100 - fore_smape
 
     # sMAPE of actual data to forecasted data
-    actual_error = abs(original['Water Level'].iloc[-1] - df_forecast['Water Level'].iloc[14])
-    act_percentage_error = actual_error / (abs(original['Water Level'].iloc[-1]) + abs(df_forecast['Water Level'].iloc[14]))
-    act_smape = 100 * np.mean(act_percentage_error)
+    numerator = abs(df_forecast['Water Level'].iloc[15] - original['Water Level'].iloc[-1])
+    denominator = (abs(original['Water Level'].iloc[-1]) + abs(df_forecast['Water Level'].iloc[15]))
+    act_percentage_water_error = numerator / denominator
+
+    act_smape = 100 * act_percentage_water_error
     act_smape = 100 - act_smape
-    act_smape = round(act_smape,2)
+    act_smape = round(act_smape, 2)
 
-
-    #act_smape = np.mean((np.abs(df_forecast['Water Level'].iloc[14] - original['Water Level'].iloc[-1]) / np.abs(df_forecast['Water Level'].iloc[14] + original['Water Level'].iloc[-1])/2)) * 100
-    #act_smape = round(act_smape,2)
-    #act_smape = 100 - act_smape
 
 
 
@@ -465,13 +464,13 @@ def Forecast(request):
                 y.append(data[i+seq_length, 0])
             return np.array(X), np.array(y)
 
-        seq_length = 100
+        seq_length = 12
         X_train, y_train = create_sequences(scaled_data[:train_size], seq_length)
         X_test, y_test = create_sequences(scaled_data[train_size:], seq_length)
 
         train_dates = list(data.index)
         n_past = 10
-        n_days_for_prediction= 380
+        n_days_for_prediction= 360 #365
         predict_period_dates = pd.date_range(list(train_dates)[-n_past], periods=n_days_for_prediction, freq='d').tolist()
         prediction = model_rainfall.predict(X_train[-n_days_for_prediction:]) 
         prediction_copies = np.repeat(prediction, data.shape[1], axis=-1)
@@ -490,7 +489,7 @@ def Forecast(request):
         # For the forecasted data plot
         last_known_date = original.index[-1]
         start_date = last_known_date + pd.Timedelta(days=-6)
-        forecast_end_date = start_date + pd.Timedelta(days=30)
+        forecast_end_date = start_date + pd.Timedelta(days=35)
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values_rain = df_forecast.loc[forecast_dates, 'RAINFALL']
 
@@ -650,15 +649,15 @@ def Forecast(request):
                 y.append(data[i+seq_length, 0])
             return np.array(X), np.array(y)
 
-        seq_length = 50
+        seq_length = 10
         X_train, y_train = create_sequences(scaled_data[:train_size], seq_length)
         X_test, y_test = create_sequences(scaled_data[train_size:], seq_length)
 
 
 
         train_dates = list(data.index)
-        n_past = 7
-        n_days_for_prediction= 350
+        n_past = 89
+        n_days_for_prediction= 221
         
         predict_period_dates = pd.date_range(list(train_dates)[-n_past], periods=n_days_for_prediction, freq='d').tolist()
         prediction = model_drawdown.predict(X_test[-n_days_for_prediction:]) 
@@ -768,10 +767,14 @@ def Forecast(request):
         fore_drawdown_smape = round(fore_drawdown_smape,2)
 
         # sMAPE of actual data to forecasted data
-        act_drawdown_smape = np.mean((np.abs(df_forecast['Drawdown'].iloc[4] - original['Drawdown'].iloc[-1]) / np.abs(df_forecast['Drawdown'].iloc[4] + original['Drawdown'].iloc[-1])/2)) * 100
-        # act_drawdown_smape = 100 - act_drawdown_smape
-        act_drawdown_smape = round(act_drawdown_smape,2)
-        forecast_drawdown = df_forecast['Drawdown'].iloc[4]
+        numerator = abs(df_forecast['Drawdown'].iloc[89] - original['Drawdown'].iloc[-1])
+        denominator = (abs(original['Drawdown'].iloc[-1]) + abs(df_forecast['Drawdown'].iloc[89]))
+        act_percentage_drawdown_error = numerator / denominator
+
+        act_drawdown_smape = 100 * act_percentage_drawdown_error
+        act_drawdown_smape = 100 - act_drawdown_smape
+        act_drawdown_smape = round(act_drawdown_smape, 2)
+        forecast_drawdown = df_forecast['Drawdown'].iloc[89]
         return fore_drawdown_smape, act_drawdown_smape, forecast_drawdown, actual_drawdown, html_str
     
     forecast_drawdown = 0
@@ -1129,44 +1132,48 @@ def Business_zone (request):
                 'nrw_volume': nrw_volume,
                 'water_supply': water_supply})
     
-
 def Img_map(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         if request.method == 'GET':
             df = pd.DataFrame(filtered_data)
             location = request.GET.get('location_name')
-            business_zone = df.loc[location]
-            nrwv = business_zone['Supply Volume'] - business_zone['Bill Volume']
-            bv = business_zone['Bill Volume']
-            sv = business_zone['Supply Volume']
-            nrwv_percentage = (business_zone['nrwv'] / business_zone['Supply Volume']) * 100
-            water_supply = sv - nrwv
+            if location in df.index:
+                business_zone = df.loc[location]
+                nrwv = business_zone['Supply Volume'] - business_zone['Bill Volume']
+                bv = business_zone['Bill Volume']
+                sv = business_zone['Supply Volume']
+                nrwv_percentage = (nrwv / sv) * 100
+                water_supply = sv - nrwv
 
-            nrwv = round(nrwv, 2)
-            sv = round(sv, 2)
-            nrwv_percentage = round(nrwv_percentage, 2)
-            if location == 'Elliptical':
-                img_src = 'img/bz-map(elliptical).png'
-            elif location == 'Tandang sora':
-                img_src = 'img/bz-map(tsora).png'
-            elif location == 'Timog':
-                img_src = 'img/bz-map(timog).png'
-            elif location == 'Up-Katipunan':
-                img_src = 'img/bz-map(up).png'
-            elif location == 'Araneta-Libis':
-                img_src = 'img/bz-map(araneta).png'
-            elif location == 'San Juan':
-                img_src = 'img/bz-map(sjuan).png'
-                
+                nrwv = round(nrwv, 2)
+                sv = round(sv, 2)
+                nrwv_percentage = round(nrwv_percentage, 2)
 
+                img_src = ''
+                if location == 'Elliptical':
+                    img_src = 'img/bz-map(elliptical).png'
+                elif location == 'Tandang sora':
+                    img_src = 'img/bz-map(tsora).png'
+                elif location == 'Timog':
+                    img_src = 'img/bz-map(timog).png'
+                elif location == 'Up-Katipunan':
+                    img_src = 'img/bz-map(up).png'
+                elif location == 'Araneta-Libis':
+                    img_src = 'img/bz-map(araneta).png'
+                elif location == 'San Juan':
+                    img_src = 'img/bz-map(sjuan).png'
 
-            data = {
-                'nrwv': nrwv,
-                'sv': sv,
-                'bv': bv,
-                'water_supply': water_supply,
-                'nrwv_percentage':nrwv_percentage,
-                'location':location,
-                'img_src': static(img_src)
-            }
-        return JsonResponse(data)
+                data = {
+                    'nrwv': nrwv,
+                    'sv': sv,
+                    'bv': bv,
+                    'water_supply': water_supply,
+                    'nrwv_percentage': nrwv_percentage,
+                    'location': location,
+                    'img_src': static(img_src) if img_src else ''
+                }
+
+                return JsonResponse(data)
+            else:
+                return JsonResponse({'error': 'Location not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)

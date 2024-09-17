@@ -32,11 +32,13 @@
 
 #notifications-dropdown li {
     max-width: 100px;
+    font-family: Roboto;
     word-wrap: break-word;
-    display: inline-block;
+    display: contents;
     white-space: normal;
     color: black;
 }
+
 
 #notifications-dropdown.dropdown-menu {
     width: 200px;
@@ -45,4 +47,41 @@
 .notification-section ul {
     list-style-type: none; /* Remove markers */
     padding-left: 0; /* Remove default padding */
+}
+
+
+
+.dropdown-item-date{
+    color: gray;
+    font-family: Roboto;
+    font-size: 10px;
+    margin: 0px auto -10px 5px;
+
+}
+
+.dropdown-item-msg{
+    color: black;
+    font-family: Roboto;
+    font-size: 15px;
+    margin: 0px auto 5px 5px;   
+}
+
+.custom-drp-menu {
+    width: 30vw !important;
+    padding: 20px !important;
+    transform: translate(-120px, 45px) !important;
+    height: 500px !important;
+    overflow: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    background-color: #003f67 !important;
+    border: solid 3px #6DA7CD !important;
+}
+
+.custom-drp-menu .dropdown-item-msg {
+    color: #fff !important;
+}
+
+.custom-drp-menu .dropdown-item-date {
+    color: #fff !important;
 }
