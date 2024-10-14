@@ -1,7 +1,0 @@
-netstat -aon | findstr :8000
-
-sudo redis-server /etc/redis/redis.conf
-redis-cli ping
-
-To start celery_beat: celery -A web_system beat -l INFO
-To ready the celery to work: celery -A web_system.celery worker --pool=solo -l info
