@@ -2,7 +2,6 @@ from keras.models import load_model
 from django.shortcuts import render
 import pandas as pd
 import numpy as np
-from django.http import JsonResponse
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 import matplotlib
@@ -15,6 +14,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from django.http import JsonResponse
 from django.templatetags.static import static
+from django.utils import timezone
 
 
 def waterlvl_prediction():
@@ -275,7 +275,7 @@ def Dashboard(request):
                     color="white"  
                 )
             ),
-        modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+        modebar_remove=['zoom', 'lasso','select2d','lasso2d']
         )
         fig.update_yaxes(ticktext=filtered_data.index,tickvals=y)
 
@@ -320,6 +320,12 @@ def Dashboard(request):
 def Forecast(request):
     def water_level_plot():
         waterlvl_prediction()
+        last_known_date = original.index[-1]
+        start_date = last_known_date + pd.Timedelta(days=-6)
+        forecast_end_date = start_date + pd.Timedelta(days=470)
+        forecast_dates = pd.date_range(start=start_date, end=forecast_end_date) 
+        forecast_values = df_forecast.loc[forecast_dates, 'Water Level']
+        last_known_value = original['Water Level'].iloc[-1]
 
         config = {'displaylogo': False, 'displayModeBar': True}
 
@@ -340,7 +346,7 @@ def Forecast(request):
             marker=dict(color='orange', size=5),
             line=dict(width=1.5),
             name='Forecasted',
-            hovertemplate='%{y:.2f} m',
+            hovertemplate='%{y:.2f} m'
         )
 
         fig = go.Figure()
@@ -353,7 +359,9 @@ def Forecast(request):
                 titlefont=dict(size=14, color='white'),
                 tickformat='%b %d, %Y',
                 tickangle=0,
-                tickfont=dict(size=12, color='white')
+                tickfont=dict(size=12, color='white'),
+                range=[forecast_dates[0], forecast_dates[30]]
+
             ),
             yaxis=dict(
                 title='Water Level (m)',
@@ -382,7 +390,7 @@ def Forecast(request):
             ),
             width = 990,
             height = 600,
-            modebar_remove=['zoom', 'lasso','select2d','lasso2d','resetScale2d']
+            modebar_remove=['zoom', 'lasso','select2d','lasso2d']
         )
 
         fig.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='rgba(255, 255, 255, 0.3)', showspikes = True, spikecolor="white", spikethickness = 0.7, spikedash='solid', )
@@ -433,7 +441,7 @@ def Forecast(request):
 
 
     def rainfall_plot():
-        model_rainfall = load_model('Model_rainfall.h5')
+        model_rainfall = load_model('Model_rainfall.keras')
         first_data = pd.read_csv('rainfall_data.csv')
         first_data['RAINFALL'] = pd.to_numeric(first_data['RAINFALL'], errors='coerce')
 
@@ -449,7 +457,7 @@ def Forecast(request):
         wind_direct_mean = train_data['WIND_DIRECTION'].mean()
         rh_mean = train_data['RH'].mean()
 
-        data = first_data.fillna(value={'RAINFALL': 0, 'TMAX': tmax_mean, 'TMIN': tmin_mean, 'TMEAN': tmean_mean, 'WIND_SPEED': wind_speed_mean, 'WIND_DIRECTION': wind_direct_mean, 'RH': rh_mean}).copy()    
+        data = first_data.fillna(value={'RAINFALL': 0, 'TMAX': tmax_mean, 'TMIN': tmin_mean, 'TMEAN': tmean_mean, 'WIND_SPEED': wind_speed_mean, 'WIND_DIRECTION': wind_direct_mean, 'RH': rh_mean}).copy()
         data['Date'] = pd.to_datetime(data[['YEAR', 'MONTH', 'DAY']], format='%d-%b-%y')
         data.set_index('Date', inplace=True)
         data.drop(columns=['YEAR', 'DAY', 'MONTH'], inplace=True)
@@ -470,7 +478,7 @@ def Forecast(request):
 
         train_dates = list(data.index)
         n_past = 10
-        n_days_for_prediction= 360 #365
+        n_days_for_prediction= 300 #365
         predict_period_dates = pd.date_range(list(train_dates)[-n_past], periods=n_days_for_prediction, freq='d').tolist()
         prediction = model_rainfall.predict(X_train[-n_days_for_prediction:]) 
         prediction_copies = np.repeat(prediction, data.shape[1], axis=-1)
@@ -484,11 +492,11 @@ def Forecast(request):
 
         # For the past data
         original = data[['RAINFALL']]
-        original = original.loc[(original.index >= original.index[-7]) & (original.index <= original.index[-1])]
+        original = original.loc[(original.index >= original.index[-10]) & (original.index <= original.index[-1])]
 
         # For the forecasted data plot
         last_known_date = original.index[-1]
-        start_date = last_known_date + pd.Timedelta(days=-6)
+        start_date = last_known_date + pd.Timedelta(days=-8)
         forecast_end_date = start_date + pd.Timedelta(days=35)
         forecast_dates = pd.date_range(start=start_date, end=forecast_end_date)
         forecast_values_rain = df_forecast.loc[forecast_dates, 'RAINFALL']
@@ -579,32 +587,20 @@ def Forecast(request):
         test_predictions = np.array(test_predictions)
         y_test_inv = np.array(y_test_inv)
 
-        fore_rain_error = abs(y_test_inv - test_predictions)
-        fore_percentage_rain_error = fore_rain_error / (abs(y_test_inv) + abs(test_predictions))
-        fore_rain_smape = 100 * np.mean(fore_percentage_rain_error)
-        fore_rain_smape = round(fore_rain_smape,2)
-        #fore_smape = np.mean((np.abs(test_predictions - y_test_inv) / np.abs(test_predictions + y_test_inv))) * 100
-        #fore_rain_smape = 100 - fore_rain_smape
 
+        # SMAPE of actual data 
+        numerator = abs(df_forecast['RAINFALL'].iloc[8] - original['RAINFALL'].iloc[-1])
+        denominator = (abs(original['RAINFALL'].iloc[-1]) + abs(df_forecast['RAINFALL'].iloc[8]))
+        act_percentage_rain_error = numerator / denominator
 
-        # sMAPE of actual data to forecasted data
-        actual_rain_error = abs(original['RAINFALL'].iloc[-1] - df_forecast['RAINFALL'].iloc[9])
-        act_percentage_rain_error = actual_rain_error / (abs(original['RAINFALL'].iloc[-1]) + abs(df_forecast['RAINFALL'].iloc[9]))
-        act_rain_smape = 100 * np.mean(act_percentage_rain_error)
+        act_rain_smape = 100 * act_percentage_rain_error
         act_rain_smape = 100 - act_rain_smape
-        act_rain_smape = round(act_rain_smape,2)
+        act_rain_smape = round(act_rain_smape, 2)
 
-        #fore_rain_smape = np.mean((np.abs(test_predictions - y_test_inv) / np.abs(test_predictions + y_test_inv))) * 100
-        #fore_rain_smape = round(fore_rain_smape,2)
-        #fore_rain_smape = 100 - fore_rain_smape
-        forecast_rain = df_forecast['RAINFALL'].iloc[9]
+
+        forecast_rain = df_forecast['RAINFALL'].iloc[8]
         forecast_rain = round(forecast_rain,2)
-        #fore_rain_smape = 100 - fore_rain_smape
 
-        # sMAPE of actual data to forecasted data
-        #act_rain_smape = np.mean((np.abs(df_forecast['RAINFALL'].iloc[9] - original['RAINFALL'].iloc[-1]) / np.abs(df_forecast['RAINFALL'].iloc[9] + original['RAINFALL'].iloc[-1]))) * 100
-        #act_rain_smape = round(act_rain_smape,2)
-        #act_rain_smape = 100 - act_rain_smape
         actual_rain = original['RAINFALL'].iloc[-1]
         
 
@@ -1177,3 +1173,12 @@ def Img_map(request):
             else:
                 return JsonResponse({'error': 'Location not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+def Get_current_datetime(request):
+    now = timezone.localtime(timezone.now())
+    current_datetime = now.strftime("%A %d %B, %Y  %I:%M%p")
+    return JsonResponse({'current_datetime': current_datetime})
+
+

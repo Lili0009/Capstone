@@ -17,8 +17,9 @@ class water_data(models.Model):
 @receiver(post_save, sender=water_data)
 def check_water_level(sender, instance, created, **kwargs):
     if created:
-        if instance.WaterLevel >= 80.15:
-            message = f"Red Alert: Water level reached spilling level of {instance.WaterLevel}m on {instance.Date}."
+        tolerance = 0.01  
+        if instance.WaterLevel >= 80.15 - tolerance:
+            message = f"Red Alert: Water level reached spilling level {instance.WaterLevel}m."
             notification = BroadcastNotification.objects.create(
                 message=message,
                 broadcast_on=timezone.now()
@@ -27,7 +28,7 @@ def check_water_level(sender, instance, created, **kwargs):
             broadcast_notification.delay(notification.id)
 
         elif instance.WaterLevel <= 69:
-            message = f"Red Alert: Critical water level {instance.WaterLevel}m"
+            message = f"Red Alert: Critical water level at {instance.WaterLevel}m"
             notification = BroadcastNotification.objects.create(
                 message=message,
                 broadcast_on=timezone.now()  
@@ -47,7 +48,7 @@ class rainfall_data(models.Model):
     RelativeHumidity = models.IntegerField(null=True)   
 
 
-class business_zones(models.Model):
+class business_zones_data(models.Model):
     CHOICES = [
         ('Araneta-Libis', 'Araneta-Libis'),
         ('Elliptical', 'Elliptical'),

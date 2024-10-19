@@ -1,0 +1,2 @@
+NOTE IN TESTING
+RAINFALL FORECASTING: the npast is decreasing to 1 result of wrong indexing in forecasted data

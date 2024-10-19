@@ -1,0 +1,146 @@
+Date,Business Zone,Supply Volume,Bill Volume
+01-Jan-22,Araneta-Libis,61.24,42.45
+01-Jan-22,Elliptical,57.93,38.57
+01-Jan-22,San Juan,43.74,27.54
+01-Jan-22,Tandang sora,54.05,35.31
+01-Jan-22,Timog,33.64,18.92
+01-Jan-22,Up-Katipunan,51.56,31.48
+01-Feb-22,Araneta-Libis,62.64,42.91
+01-Feb-22,Elliptical,57.25,38.07
+01-Feb-22,San Juan,44.93,28.31
+01-Feb-22,Tandang sora,54.29,36.56
+01-Feb-22,Timog,33.88,19.06
+01-Feb-22,Up-Katipunan,50.7,31.86
+01-Mar-22,Araneta-Libis,64.2,45.71
+01-Mar-22,Elliptical,59.06,40.72
+01-Mar-22,San Juan,45.59,30.83
+01-Mar-22,Tandang sora,55.87,39.15
+01-Mar-22,Timog,34.79,20.27
+01-Mar-22,Up-Katipunan,51.25,34.21
+01-Apr-22,Araneta-Libis,66.78,48.3
+01-Apr-22,Elliptical,60.97,42.63
+01-Apr-22,San Juan,46.39,30.28
+01-Apr-22,Tandang sora,56.49,39.01
+01-Apr-22,Timog,36.1,21.01
+01-Apr-22,Up-Katipunan,52.53,34.74
+01-May-22,Araneta-Libis,67.33,48.07
+01-May-22,Elliptical,60.61,42.94
+01-May-22,San Juan,46.39,30.11
+01-May-22,Tandang sora,57.23,39
+01-May-22,Timog,35.81,20.88
+01-May-22,Up-Katipunan,51.83,34.74
+01-Jun-22,Araneta-Libis,67.57,47.78
+01-Jun-22,Elliptical,61.47,42.94
+01-Jun-22,San Juan,47.74,31.01
+01-Jun-22,Tandang sora,58.14,39.44
+01-Jun-22,Timog,36.14,21.64
+01-Jun-22,Up-Katipunan,52.58,34.96
+01-Jul-22,Araneta-Libis,67.61,47.7
+01-Jul-22,Elliptical,62.37,43.37
+01-Jul-22,San Juan,48.15,31.38
+01-Jul-22,Tandang sora,58.53,39.37
+01-Jul-22,Timog,36.88,21.76
+01-Jul-22,Up-Katipunan,53.86,34.95
+01-Aug-22,Araneta-Libis,65.77,46.95
+01-Aug-22,Elliptical,63.6,42.63
+01-Aug-22,San Juan,48.11,30.92
+01-Aug-22,Tandang sora,58.16,38.48
+01-Aug-22,Timog,35.91,21.41
+01-Aug-22,Up-Katipunan,52.66,34.76
+01-Sep-22,Araneta-Libis,65.45,46.55
+01-Sep-22,Elliptical,64.1,42.57
+01-Sep-22,San Juan,48.43,31.07
+01-Sep-22,Tandang sora,57.3,36.98
+01-Sep-22,Timog,36.63,21.13
+01-Sep-22,Up-Katipunan,51.72,34.69
+01-Oct-22,Araneta-Libis,65.24,47.34
+01-Oct-22,Elliptical,63.42,42.49
+01-Oct-22,San Juan,49.15,31.33
+01-Oct-22,Tandang sora,57.25,37.91
+01-Oct-22,Timog,36.85,21.59
+01-Oct-22,Up-Katipunan,51.98,36.12
+01-Nov-22,Araneta-Libis,65.47,47.44
+01-Nov-22,Elliptical,61.88,43.16
+01-Nov-22,San Juan,48.91,30.85
+01-Nov-22,Tandang sora,56.79,37.5
+01-Nov-22,Timog,36.91,21.58
+01-Nov-22,Up-Katipunan,53.31,35.41
+01-Dec-22,Araneta-Libis,67.06,48.53
+01-Dec-22,Elliptical,61.5,43.82
+01-Dec-22,San Juan,49.46,31.14
+01-Dec-22,Tandang sora,55.94,37.88
+01-Dec-22,Timog,37.7,22.51
+01-Dec-22,Up-Katipunan,52.61,36.32
+01-Jan-23,Araneta-Libis,64.03,46.23
+01-Jan-23,Elliptical,60.76,41.49
+01-Jan-23,San Juan,46.66,28.97
+01-Jan-23,Tandang sora,55.45,36.2
+01-Jan-23,Timog,36.67,20.65
+01-Jan-23,Up-Katipunan,53.19,34.16
+01-Feb-23,Araneta-Libis,65.27,47.4
+01-Feb-23,Elliptical,60.45,42.27
+01-Feb-23,San Juan,48.18,30.22
+01-Feb-23,Tandang sora,55.54,36.14
+01-Feb-23,Timog,36.99,21.4
+01-Feb-23,Up-Katipunan,52.87,35.63
+01-Mar-23,Araneta-Libis,67.03,48.82
+01-Mar-23,Elliptical,62.79,43.11
+01-Mar-23,San Juan,48.41,31.01
+01-Mar-23,Tandang sora,54.65,37.04
+01-Mar-23,Timog,37.46,21.92
+01-Mar-23,Up-Katipunan,52.59,36.61
+01-Apr-23,Araneta-Libis,67.22,48.72
+01-Apr-23,Elliptical,63.77,43.54
+01-Apr-23,San Juan,48.79,31.71
+01-Apr-23,Tandang sora,55.53,38.5
+01-Apr-23,Timog,38.32,22.22
+01-Apr-23,Up-Katipunan,57.07,37.12
+01-May-23,Araneta-Libis,68.36,48.67
+01-May-23,Elliptical,64.17,43.53
+01-May-23,San Juan,50.33,32.78
+01-May-23,Tandang sora,56.49,39.5
+01-May-23,Timog,39.39,23.21
+01-May-23,Up-Katipunan,53.96,36.71
+01-Jun-23,Araneta-Libis,67.91,49.19
+01-Jun-23,Elliptical,65.26,43.94
+01-Jun-23,San Juan,50.32,32.57
+01-Jun-23,Tandang sora,56.12,37.48
+01-Jun-23,Timog,40,23.03
+01-Jun-23,Up-Katipunan,55.89,36.17
+01-Jul-23,Araneta-Libis,67.93,48.25
+01-Jul-23,Elliptical,63.28,44.29
+01-Jul-23,San Juan,48.3,31.32
+01-Jul-23,Tandang sora,55.51,37.7
+01-Jul-23,Timog,39.49,22.2
+01-Jul-23,Up-Katipunan,54.88,35.74
+01-Aug-23,Araneta-Libis,65.82,47.9
+01-Aug-23,Elliptical,63.33,43.89
+01-Aug-23,San Juan,48.39,31.4
+01-Aug-23,Tandang sora,54.96,36.67
+01-Aug-23,Timog,39.22,22.34
+01-Aug-23,Up-Katipunan,52.34,35.29
+01-Sep-23,Araneta-Libis,67.56,48.55
+01-Sep-23,Elliptical,64.83,42.94
+01-Sep-23,San Juan,49.11,31.94
+01-Sep-23,Tandang sora,55.27,36.65
+01-Sep-23,Timog,40.2,22.43
+01-Sep-23,Up-Katipunan,51.55,34.68
+01-Oct-23,Araneta-Libis,67.53,48.56
+01-Oct-23,Elliptical,65.23,42.69
+01-Oct-23,San Juan,49.51,31.51
+01-Oct-23,Tandang sora,55.68,36.28
+01-Oct-23,Timog,39.35,22.82
+01-Oct-23,Up-Katipunan,51.82,35.2
+01-Nov-23,Araneta-Libis,64.7,47.14
+01-Nov-23,Elliptical,60.85,41.27
+01-Nov-23,San Juan,47.62,30.58
+01-Nov-23,Tandang sora,54.14,34.95
+01-Nov-23,Timog,37.91,21.62
+01-Nov-23,Up-Katipunan,52.19,33.22
+01-Dec-23,Araneta-Libis,66.08,48.85
+01-Dec-23,Elliptical,62.5,43.16
+01-Dec-23,San Juan,48.49,31.92
+01-Dec-23,Tandang sora,55.45,35.81
+01-Dec-23,Timog,38.2,22.71
+01-Dec-23,Up-Katipunan,53.32,35.37
+01-Dec-23,Up-Katipunan,53.32,45.57
